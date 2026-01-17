@@ -9,6 +9,9 @@ end
 
 function vec2d:normalize()
 	local mag = self:magnitude()
+	if abs(mag) <= 0.001 then
+		return vec2d.new(0, 0)
+	end
 	return vec2d.new(self.x / mag, self.y / mag)
 end
 
@@ -21,7 +24,7 @@ function vec2d:dot(vb)
 end
 
 
-function vec2.__add(va, vb)
+function vec2d.__add(va, vb)
 	--if typeof(b) == "table" and b.__type == "vec2d" then
 		return vec2d.new(va.x + vb.x, va.y + vb.y)
 	--else
@@ -65,7 +68,7 @@ local function handle_movement_input()
 		y += 1
 	end
 
-	local input_acceleration = vec2d.new(x, y):normalize() * 5
+	local input_acceleration = vec2d.new(x, y):normalize() * 0.05
 	current_velocity += input_acceleration
 
 	if current_velocity:magnitude() >= 50 then
@@ -78,15 +81,15 @@ end
 
 function _update()
 	handle_movement_input()
-	spr(2, player_position.x * 8 - 4, player_position.y * 8 - 4)
 end
 
 function _draw()
-	cls()
+	cls(1)
 	
-	room_x=flr(pl.x/16)
-	room_y=flr(pl.y/16)
+	room_x=flr(player_position.x/16)
+	room_y=flr(player_position.y/16)
 	camera(room_x*128,room_y*128)
 
 	map()
+	spr(2, player_position.x * 8 - 4, player_position.y * 8 - 4)
 end
