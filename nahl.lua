@@ -63,6 +63,7 @@ function make_actor(index, x, y)
 	return a
 end
 local player = make_actor(2, 16, 16)
+local ai = make_actor(3, 64, 64)
 
 function solid_tile(tx, ty)
 	return fget(mget(tx, ty), 7)
@@ -127,6 +128,8 @@ function _draw()
 	camera(room_x * 128, room_y * 128)
 
 	map()
-	spr(player.index, player.pos.x - player.w, player.pos.y - player.h)
+	for act in all(actor) do
+		spr(act.index + act.frame, act.pos.x - act.w, act.pos.y - act.h)
+	end
 end
 
