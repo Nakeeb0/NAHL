@@ -1,14 +1,92 @@
-x = 64  y = 64
+local vec2d = {
+	__type = "vec2d"
+}
+vec2d.__index = vec2d
+
+function vec2d.new(a, b)
+	return setmetatable({x = a, y = b}, vec2d)
+end
+
+function vec2d:normalize()
+	local mag = self:magnitude()
+	return vec2d.new(self.x / mag, self.y / mag)
+end
+
+function vec2d:magnitude()
+	return sqrt(self.x^2 + self.y^2)
+end
+
+function vec2d:dot(vb)
+	return self.x*vb.x + self.y*vb.y
+end
+
+
+function vec2.__add(va, vb)
+	--if typeof(b) == "table" and b.__type == "vec2d" then
+		return vec2d.new(va.x + vb.x, va.y + vb.y)
+	--else
+	--	return 
+	--end
+end
+
+function vec2d.__sub(va, vb)
+	return vec2d.new(va.x - vb.x, va.y - vb.y)
+end
+
+function vec2d.__div(va, b)
+	return vec2d.new(va.x / b, va.y / b)
+end
+
+function vec2d.__mul(va, b)
+	return vec2d.new(va.x * b, va.y * b)
+end
+
+function vec2d.__unm(va, b)
+	return vec2d.new(-va.x, -va.y)
+end
+
+
+local player_position = vec2d.new(2, 2)
+local current_velocity = vec2d.new(0, 0)
+
+local function handle_movement_input()
+	local x = 0
+	local y = 0
+	if btn(0) then
+		x -= 1
+	end
+	if btn(1) then
+		x += 1
+	end
+	if btn(2) then
+		y -= 1
+	end
+	if btn(3) then
+		y += 1
+	end
+
+	local input_acceleration = vec2d.new(x, y):normalize() * 5
+	current_velocity += input_acceleration
+
+	if current_velocity:magnitude() >= 50 then
+		current_velocity = current_velocity:normalize() * 50
+	end
+	current_velocity *= 0.95
+
+	player_position += current_velocity
+end
+
 function _update()
-  if (btn(0)) then x=x-1 end
-  if (btn(1)) then x=x+1 end
-  if (btn(2)) then y=y-1 end
-  if (btn(3)) then y=y+1 end
+	handle_movement_input()
+	spr(2, player_position.x * 8 - 4, player_position.y * 8 - 4)
 end
- 
+
 function _draw()
-  cls(5)
-  circfill(x,y,7,14)
+	cls()
+	
+	room_x=flr(pl.x/16)
+	room_y=flr(pl.y/16)
+	camera(room_x*128,room_y*128)
+
+	map()
 end
-
-
