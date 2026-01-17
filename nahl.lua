@@ -69,11 +69,11 @@ local function handle_movement_input()
 	end
 
 	local input = vec2d.new(x, y)
-	local input_acceleration = input:normalize() * 0.012
+	local input_acceleration = input:normalize() * 0.014
 	current_velocity += input_acceleration
 
-	if current_velocity:magnitude() >= 30 then
-		current_velocity = current_velocity:normalize() * 30
+	if current_velocity:magnitude() >= 100 then
+		current_velocity = current_velocity:normalize() * 100
 	end
 	current_velocity *= 0.95
 	if input:magnitude() == 0 and current_velocity:magnitude() <= 0.015 then
