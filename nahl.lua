@@ -75,7 +75,7 @@ local function handle_movement_input()
 	if current_velocity:magnitude() >= 100 then
 		current_velocity = current_velocity:normalize() * 100
 	end
-	current_velocity *= 0.95
+	current_velocity *= 0.97
 	if input:magnitude() == 0 and current_velocity:magnitude() <= 0.015 then
 		current_velocity = vec2d.new(0, 0)
 	end
