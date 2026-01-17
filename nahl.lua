@@ -56,6 +56,7 @@ function make_actor(index, x, y)
 		bounce  = 0.3,
 		frames = 2,
 		velocity_cutoff = 0.50,
+		dash_speed = 3,
 		w = 4,
 		h = 4 
 	}
@@ -86,15 +87,16 @@ end
 function move_actor(a)
 	local x = 0
 	local y = 0
-	if (a == player) then
-		if (btn(0)) then x -= 1 end
-		if (btn(1)) then x += 1 end
-		if (btn(2)) then y -= 1 end
-		if (btn(3)) then y += 1 end
-	end
+	if (btn(0)) then x -= 1 end
+	if (btn(1)) then x += 1 end
+	if (btn(2)) then y -= 1 end
+	if (btn(3)) then y += 1 end
 
 	local input_vec = vec2d.new(x, y)
 	local input_acc = input_vec:normalize() * a.accel
+	if (btn(4) and input_vec:magnitude() > 0) then
+		 a.vel = input_vec:normalize() * a.dash_speed 
+	end
 	a.vel += input_acc
 
 	if input_vec:magnitude() == 0 and a.vel:magnitude() <= a.velocity_cutoff then
