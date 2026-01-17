@@ -24,11 +24,7 @@ function vec2d:dot(vb)
 end
 
 function vec2d.__add(va, vb)
-	--if typeof(b) == "table" and b.__type == "vec2d" then
 	return vec2d.new(va.x + vb.x, va.y + vb.y)
-	--else
-	--	return
-	--end
 end
 
 function vec2d.__sub(va, vb)
@@ -47,25 +43,36 @@ function vec2d.__unm(va, b)
 	return vec2d.new(-va.x, -va.y)
 end
 
-local player_position = vec2d.new(16, 16)
-local current_velocity = vec2d.new(0, 0)
-local acceleration = 0.3
-local max_speed = 200
-local friction_multiplier = 0.98
-local velocity_cutoff = 0.50
-local w = 4
-local h = 4
-local bounce = 0.3
+actor = {}
+function make_actor(index, x, y)
+	a={
+		index = index,
+		pos = vec2d.new(x, y),
+		vel = vec2d.new(0, 0),
+		accel = 0.3,
+		frame = 0,
+		t = 0,
+		friction = 0.98,
+		bounce  = 0.3,
+		frames = 2,
+		velocity_cutoff = 0.50,
+		w = 4,
+		h = 4 
+	}
+	add(actor,a)
+	return a
+end
+local player = make_actor(2, 16, 16)
 
 function solid_tile(tx, ty)
 	return fget(mget(tx, ty), 7)
 end
 
-function solid_aabb(px, py)
-	local l = px - w
-	local r = px + w - 1
-	local t = py - h
-	local b = py + h - 1
+function solid_aabb(a, check_x, check_y)
+	local l = check_x - a.w
+	local r = check_x + a.w - 1
+	local t = check_y - a.h
+	local b = check_y + a.h - 1
 
 	local tx0 = flr(l / 8)
 	local tx1 = flr(r / 8)
@@ -75,61 +82,51 @@ function solid_aabb(px, py)
 	return solid_tile(tx0, ty0) or solid_tile(tx1, ty0) or solid_tile(tx0, ty1) or solid_tile(tx1, ty1)
 end
 
-local function handle_movement_input()
+function move_actor(a)
 	local x = 0
 	local y = 0
-	if btn(0) then
-		x -= 1
-	end
-	if btn(1) then
-		x += 1
-	end
-	if btn(2) then
-		y -= 1
-	end
-	if btn(3) then
-		y += 1
+	if (a == player) then
+		if (btn(0)) then x -= 1 end
+		if (btn(1)) then x += 1 end
+		if (btn(2)) then y -= 1 end
+		if (btn(3)) then y += 1 end
 	end
 
-	local input = vec2d.new(x, y)
-	local input_acceleration = input:normalize() * acceleration
-	current_velocity += input_acceleration
+	local input_vec = vec2d.new(x, y)
+	local input_acc = input_vec:normalize() * a.accel
+	a.vel += input_acc
 
-	if current_velocity:magnitude() >= max_speed then
-		current_velocity = current_velocity:normalize() * max_speed
+	if input_vec:magnitude() == 0 and a.vel:magnitude() <= a.velocity_cutoff then
+		a.vel = vec2d.new(0, 0)
 	end
 
-	if input:magnitude() == 0 and current_velocity:magnitude() <= velocity_cutoff then
-		current_velocity = vec2d.new(0, 0)
-	end
-
-	if not solid_aabb(player_position.x + current_velocity.x, player_position.y) then
-		player_position.x += current_velocity.x
+	if not solid_aabb(a, a.pos.x + a.vel.x, a.pos.y) then
+		a.pos.x += a.vel.x
 	else
-		current_velocity.x *= -bounce
+		a.vel.x *= -a.bounce
 	end
 
-	if not solid_aabb(player_position.x, player_position.y + current_velocity.y) then
-		player_position.y += current_velocity.y
+	if not solid_aabb(a, a.pos.x, a.pos.y + a.vel.y) then
+		a.pos.y += a.vel.y
 	else
-		current_velocity.y *= -bounce
+		a.vel.y *= -a.bounce
 	end
 
-	current_velocity *= friction_multiplier
+	a.vel *= a.friction
 end
 
 function _update()
-	handle_movement_input()
+	move_actor(player)
 end
 
 function _draw()
 	cls(1)
 
-	room_x = flr(player_position.x / 128)
-	room_y = flr(player_position.y / 128)
+	room_x = flr(player.pos.x / 128)
+	room_y = flr(player.pos.y / 128)
 	camera(room_x * 128, room_y * 128)
 
 	map()
-	spr(2, player_position.x - w, player_position.y - h)
+	spr(player.index, player.pos.x - player.w, player.pos.y - player.h)
 end
 
