@@ -51,6 +51,10 @@ end
 
 local player_position = vec2d.new(2, 2)
 local current_velocity = vec2d.new(0, 0)
+local acceleration = 0.014
+local max_speed = 100
+local friction_multiplier = 0.97
+local velocity_cutoff = 0.015
 
 local function handle_movement_input()
 	local x = 0
@@ -69,14 +73,14 @@ local function handle_movement_input()
 	end
 
 	local input = vec2d.new(x, y)
-	local input_acceleration = input:normalize() * 0.014
+	local input_acceleration = input:normalize() * acceleration
 	current_velocity += input_acceleration
 
-	if current_velocity:magnitude() >= 100 then
-		current_velocity = current_velocity:normalize() * 100
+	if current_velocity:magnitude() >= max_speed then
+		current_velocity = current_velocity:normalize() * max_speed
 	end
-	current_velocity *= 0.97
-	if input:magnitude() == 0 and current_velocity:magnitude() <= 0.015 then
+	current_velocity *= friction_multiplier
+	if input:magnitude() == 0 and current_velocity:magnitude() <= velocity_cutoff then
 		current_velocity = vec2d.new(0, 0)
 	end
 
