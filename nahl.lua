@@ -101,11 +101,12 @@ function move_actor(a)
 		for a2 in all(actor) do
 			if a ~= a2 then
 				if actor_collision(a, a2) then
+					sfx(1)
 					local dir = (a.pos - a2.pos):normalize()
 					local force = dir:magnitude()
 					if force > 0 then
-						a.vel += dir * force
-						a2.vel -= dir * force
+						a.vel += dir * a2.vel:magnitude() * 0.5
+						a2.vel -= dir * a.vel:magnitude() * 0.5
 					end
 				end
 			end
