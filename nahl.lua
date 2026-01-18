@@ -44,6 +44,9 @@ function vec2d.__unm(va, b)
 end
 
 function vec2d:proj(vb) --u is vb, v is self
+	if abs(self:magnitude()) <= 0.001 then
+		return vec2d.new(0, 0)
+	end
 	return self * (self:dot(vb) / (self:magnitude() * self:magnitude()))
 end
 
@@ -103,19 +106,6 @@ function actor_collision(a, b)
 end
 
 function move_actor(a)
-	for b in all(actor) do
-		if a ~= b then
-			if actor_collision(a, b) then
-				sfx(1)
-				local dir_a = (b.pos - a.pos):normalize()
-				local dir_b = (a.pos - b.pos):normalize()
-				local force_a = dir_a:proj(a.vel)
-				local force_b = dir_b:proj(b.vel)
-				a.vel += (force_b - force_a)
-				b.vel += (force_a - force_b)
-			end
-		end
-	end
 	if not solid_aabb(a, a.pos.x + a.vel.x, a.pos.y) then
 		a.pos.x += a.vel.x
 	else
@@ -129,6 +119,30 @@ function move_actor(a)
 	end
 
 	a.vel *= a.friction
+end
+
+function check_all_actor_collision(a)
+	for b in all(actor) do
+		if a ~= b then
+			local runs = 0
+			while runs < 3 and actor_collision(a, b) do
+				runs += 1
+				--sfx(1)
+				local dir_a = (b.pos - a.pos):normalize()
+				local dir_b = (a.pos - b.pos):normalize()
+				if dir_a:dot(a.vel) > 0 then
+					local force_a = dir_a:proj(a.vel)
+					b.vel += force_a * 0.2 + dir_a * 0.2
+				end
+				if dir_b:dot(b.vel) > 0 then
+					local force_b = dir_b:proj(b.vel)
+					a.vel += force_b * 0.2 + dir_b * 0.2
+				end
+				move_actor(a)
+				move_actor(b)
+			end
+		end
+	end
 end
 
 function _update60()
@@ -152,7 +166,9 @@ function _update60()
 	if btn(4) and input_vec:magnitude() > 0 then
 		player.vel = input_vec:normalize() * player.dash_speed
 	end
+	check_all_actor_collision(player)
 	move_actor(player)
+	move_actor(ai)
 end
 
 function _draw()
