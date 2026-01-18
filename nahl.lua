@@ -58,8 +58,9 @@ function make_actor(index, x, y)
 		velocity_cutoff = 0.50,
 		dash_speed = 5,
 		hp = 5,
+		control = true,
 		w = 4,
-		h = 4 
+		h = 4
 	}
 	add(actor,a)
 	return a
@@ -75,10 +76,10 @@ function solid_tile(tx, ty)
 end
 
 function solid_aabb(a, check_x, check_y)
-	local l = check_x - a.w
-	local r = check_x + a.w - 1
-	local t = check_y - a.h
-	local b = check_y + a.h - 1
+	local l = check_x - a.w + 1
+	local r = check_x + a.w 
+	local t = check_y - a.h + 1
+	local b = check_y + a.h
 
 	local tx0 = flr(l / 8)
 	local tx1 = flr(r / 8)
@@ -90,18 +91,24 @@ end
 
 function actor_collision(a, b)
 	return not (a.pos.x + a.w < b.pos.x - b.w or
-	            a.pos.x - a.w > b.pos.x + b.w or
-	            a.pos.y + a.h < b.pos.y - b.h or
-	            a.pos.y - a.h > b.pos.y + b.h)
+			a.pos.x - a.w > b.pos.x + b.w or
+			a.pos.y + a.h < b.pos.y - b.h or
+			a.pos.y - a.h > b.pos.y + b.h)
 end
 
 function move_actor(a)
-	if actor_collision(a, ai) or actor_collision(ai, a) then
-		local dir = (a.pos - ai.pos):normalize()
-		local force = dir:magnitude()
-		if force > 0 then
-			a.vel += dir * force 
-			ai.vel -= dir * force
+	for a in all(actor) do
+		for a2 in all(actor) do
+			if a ~= a2 then
+				if actor_collision(a, a2) then
+					local dir = (a.pos - a2.pos):normalize()
+					local force = dir:magnitude()
+					if force > 0 then
+						a.vel += dir * force 
+						a2.vel -= dir * force
+					end
+				end
+			end
 		end
 	end
 	if not solid_aabb(a, a.pos.x + a.vel.x, a.pos.y) then
