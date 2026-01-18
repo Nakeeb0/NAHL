@@ -56,11 +56,12 @@ function make_actor(index, x, y)
 		index = index,
 		pos = vec2d.new(x, y),
 		vel = vec2d.new(0, 0),
-		accel = 0.4,
+		accel = 0.2,
 		frame = 0,
 		t = 0,
-		friction = 0.85,
-		bounce = 0.7,
+		friction = 0.95,
+		bounce = 0.5,
+		weight = 1,
 		frames = 6,
 		velocity_cutoff = 0.25,
 		dash_speed = 2.5,
@@ -77,6 +78,9 @@ player.w = 3
 player.h = 3
 ai = make_actor(3, 64, 64)
 ai.frames = 1
+ai.vel = vec2d.new(1, 1)
+ai.friction = 1
+ai.wieght = 3
 
 function solid_tile(tx, ty)
 	return fget(mget(tx, ty), 7)
@@ -124,24 +128,20 @@ end
 function check_all_actor_collision(a)
 	for b in all(actor) do
 		if a ~= b then
-			local runs = 0
-			while runs < 3 and actor_collision(a, b) do
-				runs += 1
-				--sfx(1)
+			if actor_collision(a, b) then
+				sfx(1)
 				local dir_a = (b.pos - a.pos):normalize()
 				local dir_b = (a.pos - b.pos):normalize()
+				local force_a = dir_a:proj(a.vel) * a.weight
+				local force_b = dir_b:proj(b.vel) * b.weight
 				if dir_a:dot(a.vel) > 0 then
-					local force_a = dir_a:proj(a.vel)
-					b.vel += force_a * 0.2
+					b.vel += force_a
+					a.vel -= (force_a * a.bounce)
 				end
-				b.vel += dir_a * 0.2
 				if dir_b:dot(b.vel) > 0 then
-					local force_b = dir_b:proj(b.vel)
-					a.vel += force_b * 0.2
+					a.vel += force_b
+					b.vel -= (force_b * b.bounce)
 				end
-				a.vel += dir_b * 0.2
-				move_actor(a)
-				move_actor(b)
 			end
 		end
 	end
@@ -197,3 +197,4 @@ function _draw()
 		spr(act.index + act.frame, act.pos.x - act.w, act.pos.y - act.h)
 	end
 end
+
