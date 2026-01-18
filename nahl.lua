@@ -132,12 +132,14 @@ function check_all_actor_collision(a)
 				local dir_b = (a.pos - b.pos):normalize()
 				if dir_a:dot(a.vel) > 0 then
 					local force_a = dir_a:proj(a.vel)
-					b.vel += force_a * 0.2 + dir_a * 0.2
+					b.vel += force_a * 0.2
 				end
+				b.vel += dir_a * 0.2
 				if dir_b:dot(b.vel) > 0 then
 					local force_b = dir_b:proj(b.vel)
-					a.vel += force_b * 0.2 + dir_b * 0.2
+					a.vel += force_b * 0.2
 				end
+				a.vel += dir_b * 0.2
 				move_actor(a)
 				move_actor(b)
 			end
