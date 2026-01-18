@@ -43,26 +43,30 @@ function vec2d.__unm(va, b)
 	return vec2d.new(-va.x, -va.y)
 end
 
+function vec2d:proj(vb) --u is vb, v is self
+	return self * (self:dot(vb) / (self:magnitude() * self:magnitude()))
+end
+
 actor = {}
 function make_actor(index, x, y)
-	a={
+	a = {
 		index = index,
 		pos = vec2d.new(x, y),
 		vel = vec2d.new(0, 0),
-		accel = 0.2,
+		accel = 0.4,
 		frame = 0,
 		t = 0,
-		friction = 0.9,
-		bounce  = 0.8,
+		friction = 0.85,
+		bounce = 0.7,
 		frames = 6,
 		velocity_cutoff = 0.25,
 		dash_speed = 2.5,
 		hp = 5,
 		control = true,
 		w = 4,
-		h = 4
+		h = 4,
 	}
-	add(actor,a)
+	add(actor, a)
 	return a
 end
 player = make_actor(17, 16, 16)
@@ -77,7 +81,7 @@ end
 
 function solid_aabb(a, check_x, check_y)
 	local l = check_x - a.w + 1
-	local r = check_x + a.w 
+	local r = check_x + a.w
 	local t = check_y - a.h + 1
 	local b = check_y + a.h
 
@@ -90,25 +94,25 @@ function solid_aabb(a, check_x, check_y)
 end
 
 function actor_collision(a, b)
-	return not (a.pos.x + a.w < b.pos.x - b.w or
-			a.pos.x - a.w > b.pos.x + b.w or
-			a.pos.y + a.h < b.pos.y - b.h or
-			a.pos.y - a.h > b.pos.y + b.h)
+	return not (
+		a.pos.x + a.w < b.pos.x - b.w
+		or a.pos.x - a.w > b.pos.x + b.w
+		or a.pos.y + a.h < b.pos.y - b.h
+		or a.pos.y - a.h > b.pos.y + b.h
+	)
 end
 
 function move_actor(a)
-	for a in all(actor) do
-		for a2 in all(actor) do
-			if a ~= a2 then
-				if actor_collision(a, a2) then
-					sfx(1)
-					local dir = (a.pos - a2.pos):normalize()
-					local force = dir:magnitude()
-					if force > 0 then
-						a.vel += dir * a2.vel:magnitude() * 0.5
-						a2.vel -= dir * a.vel:magnitude() * 0.5
-					end
-				end
+	for b in all(actor) do
+		if a ~= b then
+			if actor_collision(a, b) then
+				sfx(1)
+				local dir_a = (b.pos - a.pos):normalize()
+				local dir_b = (a.pos - b.pos):normalize()
+				local force_a = dir_a:proj(a.vel)
+				local force_b = dir_b:proj(b.vel)
+				a.vel += (force_b - force_a)
+				b.vel += (force_a - force_b)
 			end
 		end
 	end
@@ -130,18 +134,25 @@ end
 function _update60()
 	local x = 0
 	local y = 0
-	if (btn(0)) then x -= 1 end
-	if (btn(1)) then x += 1 end
-	if (btn(2)) then y -= 1 end
-	if (btn(3)) then y += 1 end
+	if btn(0) then
+		x -= 1
+	end
+	if btn(1) then
+		x += 1
+	end
+	if btn(2) then
+		y -= 1
+	end
+	if btn(3) then
+		y += 1
+	end
 	local input_vec = vec2d.new(x, y)
 	local input_acc = input_vec:normalize() * player.accel
 	player.vel += input_acc
-	if (btn(4) and input_vec:magnitude() > 0) then
-		 player.vel = input_vec:normalize() * player.dash_speed
+	if btn(4) and input_vec:magnitude() > 0 then
+		player.vel = input_vec:normalize() * player.dash_speed
 	end
 	move_actor(player)
-	move_actor(ai)
 end
 
 function _draw()
@@ -160,7 +171,7 @@ function _draw()
 		elseif mag >= 2.5 then
 			anim_speed = 4
 		end
-		act.frame = flr(act.t/anim_speed) % act.frames
+		act.frame = flr(act.t / anim_speed) % act.frames
 		act.t += 1
 		if act.vel:magnitude() < act.velocity_cutoff then
 			act.frame = 0
@@ -168,4 +179,3 @@ function _draw()
 		spr(act.index + act.frame, act.pos.x - act.w, act.pos.y - act.h)
 	end
 end
-
