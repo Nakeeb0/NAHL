@@ -54,17 +54,21 @@ function make_actor(index, x, y)
 		t = 0,
 		friction = 0.93,
 		bounce  = 0.3,
-		frames = 2,
+		frames = 6,
 		velocity_cutoff = 0.50,
 		dash_speed = 5,
+		hp = 5,
 		w = 4,
 		h = 4 
 	}
 	add(actor,a)
 	return a
 end
-local player = make_actor(2, 16, 16)
-local ai = make_actor(3, 64, 64)
+player = make_actor(17, 16, 16)
+player.w = 3
+player.h = 3
+ai = make_actor(3, 64, 64)
+ai.frames = 1
 
 function solid_tile(tx, ty)
 	return fget(mget(tx, ty), 7)
@@ -84,7 +88,22 @@ function solid_aabb(a, check_x, check_y)
 	return solid_tile(tx0, ty0) or solid_tile(tx1, ty0) or solid_tile(tx0, ty1) or solid_tile(tx1, ty1)
 end
 
+function actor_collision(a, b)
+	return not (a.pos.x + a.w < b.pos.x - b.w or
+	            a.pos.x - a.w > b.pos.x + b.w or
+	            a.pos.y + a.h < b.pos.y - b.h or
+	            a.pos.y - a.h > b.pos.y + b.h)
+end
+
 function move_actor(a)
+	if actor_collision(a, ai) or actor_collision(ai, a) then
+		local dir = (a.pos - ai.pos):normalize()
+		local force = dir:magnitude()
+		if force > 0 then
+			a.vel += dir * force 
+			ai.vel -= dir * force
+		end
+	end
 	if not solid_aabb(a, a.pos.x + a.vel.x, a.pos.y) then
 		a.pos.x += a.vel.x
 	else
@@ -111,9 +130,10 @@ function _update()
 	local input_acc = input_vec:normalize() * player.accel
 	player.vel += input_acc
 	if (btn(4) and input_vec:magnitude() > 0) then
-		 player.vel = input_vec:normalize() * player.dash_speed 
+		 player.vel = input_vec:normalize() * player.dash_speed
 	end
 	move_actor(player)
+	move_actor(ai)
 end
 
 function _draw()
@@ -125,6 +145,18 @@ function _draw()
 
 	map()
 	for act in all(actor) do
+		local anim_speed = 6
+		local mag = act.vel:magnitude()
+		if mag >= 4 then
+			anim_speed = 2
+		elseif mag >= 2.5 then
+			anim_speed = 4
+		end
+		act.frame = flr(act.t/anim_speed) % act.frames
+		act.t += 1
+		if act.vel:magnitude() < act.velocity_cutoff then
+			act.frame = 0
+		end
 		spr(act.index + act.frame, act.pos.x - act.w, act.pos.y - act.h)
 	end
 end
