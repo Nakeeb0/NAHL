@@ -49,14 +49,14 @@ function make_actor(index, x, y)
 		index = index,
 		pos = vec2d.new(x, y),
 		vel = vec2d.new(0, 0),
-		accel = 0.4,
+		accel = 0.2,
 		frame = 0,
 		t = 0,
-		friction = 0.93,
-		bounce  = 0.3,
+		friction = 0.9,
+		bounce  = 0.8,
 		frames = 6,
-		velocity_cutoff = 0.50,
-		dash_speed = 5,
+		velocity_cutoff = 0.25,
+		dash_speed = 2.5,
 		hp = 5,
 		control = true,
 		w = 4,
@@ -104,7 +104,7 @@ function move_actor(a)
 					local dir = (a.pos - a2.pos):normalize()
 					local force = dir:magnitude()
 					if force > 0 then
-						a.vel += dir * force 
+						a.vel += dir * force
 						a2.vel -= dir * force
 					end
 				end
@@ -126,7 +126,7 @@ function move_actor(a)
 	a.vel *= a.friction
 end
 
-function _update()
+function _update60()
 	local x = 0
 	local y = 0
 	if (btn(0)) then x -= 1 end
