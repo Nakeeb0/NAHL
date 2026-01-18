@@ -49,14 +49,14 @@ function make_actor(index, x, y)
 		index = index,
 		pos = vec2d.new(x, y),
 		vel = vec2d.new(0, 0),
-		accel = 0.3,
+		accel = 0.4,
 		frame = 0,
 		t = 0,
-		friction = 0.98,
+		friction = 0.93,
 		bounce  = 0.3,
 		frames = 2,
 		velocity_cutoff = 0.50,
-		dash_speed = 3,
+		dash_speed = 5,
 		w = 4,
 		h = 4 
 	}
@@ -85,24 +85,6 @@ function solid_aabb(a, check_x, check_y)
 end
 
 function move_actor(a)
-	local x = 0
-	local y = 0
-	if (btn(0)) then x -= 1 end
-	if (btn(1)) then x += 1 end
-	if (btn(2)) then y -= 1 end
-	if (btn(3)) then y += 1 end
-
-	local input_vec = vec2d.new(x, y)
-	local input_acc = input_vec:normalize() * a.accel
-	if (btn(4) and input_vec:magnitude() > 0) then
-		 a.vel = input_vec:normalize() * a.dash_speed 
-	end
-	a.vel += input_acc
-
-	if input_vec:magnitude() == 0 and a.vel:magnitude() <= a.velocity_cutoff then
-		a.vel = vec2d.new(0, 0)
-	end
-
 	if not solid_aabb(a, a.pos.x + a.vel.x, a.pos.y) then
 		a.pos.x += a.vel.x
 	else
@@ -119,11 +101,23 @@ function move_actor(a)
 end
 
 function _update()
+	local x = 0
+	local y = 0
+	if (btn(0)) then x -= 1 end
+	if (btn(1)) then x += 1 end
+	if (btn(2)) then y -= 1 end
+	if (btn(3)) then y += 1 end
+	local input_vec = vec2d.new(x, y)
+	local input_acc = input_vec:normalize() * player.accel
+	player.vel += input_acc
+	if (btn(4) and input_vec:magnitude() > 0) then
+		 player.vel = input_vec:normalize() * player.dash_speed 
+	end
 	move_actor(player)
 end
 
 function _draw()
-	cls(1)
+	cls()
 
 	room_x = flr(player.pos.x / 128)
 	room_y = flr(player.pos.y / 128)
