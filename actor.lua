@@ -49,6 +49,9 @@ function check_all_actor_collision()
 					sfx(1)
 					a.hp -= 1
 					b.hp -= 1
+					if(a.hp <= 0) then 
+						--do something 
+					end
 					local dir_a = (b.pos - a.pos):normalize()
 					local dir_b = (a.pos - b.pos):normalize()
 					local force_a = dir_a:proj(a.vel) * a.weight
