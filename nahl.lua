@@ -136,7 +136,7 @@ function _update60()
 	for act in all(actor) do
 		move_actor(act)
 	end
-	last_button_4 = btn(4) and input_vec:magnitude() > 0
+	last_button_4 = btn(4)
 end
 function draw_health_bar(x1, y1, x2, y2, color)
 	rect(x1, y1-1, x2, y2+1, 6)
@@ -158,7 +158,7 @@ end
 function _draw()
 	cls()
 	draw_health_bar(20, 139 , 80, 142, 8)
-	draw_dash_cooldown(94, 139 , 140, 142, 7, 500)
+	draw_dash_cooldown(94, 139 , 140, 142, 7)
 	room_x = flr((player.pos.x - 16) / 128)
 	room_y = flr((player.pos.y - 16) / 128)
 	camera(room_x * 128 + 16, room_y * 128 + 16)
