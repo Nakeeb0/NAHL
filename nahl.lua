@@ -15,6 +15,7 @@ player.h = 3
 player.weight = 1
 player.friction = 0.97
 
+
 ai = make_actor(3, 64, 64)
 ai.frames = 4
 ai.vel = vec2d.new(1, 1)
@@ -121,10 +122,23 @@ function _update60()
 		move_actor(act)
 	end
 end
-
+function draw_health_bar(x1, y1, x2, y2, color)
+	rect(x1, y1-1, x2, y2+1, 6)
+	local chunk = (x2 - x1) / player.hp_max
+	rectfill(x1, y1, max(x1, x2-(chunk*(player.hp_max-player.hp))), y2, color)
+	line(x1, y1, x1, y2 , 6)
+	line(x2, y1, x2, y2 , 6)
+	for i=x1+chunk,x2-chunk,chunk do
+		line(i, y1, i, y2 , 0)
+	end 
+end
+function draw_dash_cooldown(x1, y1, x2, y2, color)
+	rectfill(x1, y1, x2, y2, color)
+end
 function _draw()
 	cls()
-
+	draw_health_bar(20, 139 , 80, 142, 8)
+	draw_dash_cooldown(94, 139 , 140, 142, 7)
 	room_x = flr((player.pos.x - 16) / 128)
 	room_y = flr((player.pos.y - 16) / 128)
 	camera(room_x * 128 + 16, room_y * 128 + 16)

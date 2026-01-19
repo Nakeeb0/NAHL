@@ -13,7 +13,8 @@ function make_actor(index, x, y)
 		frames = 6,
 		velocity_cutoff = 0.25,
 		dash_speed = 2.5,
-		hp = 5,
+		hp = 10,
+		hp_max = 10,
 		control = true,
 		w = 4,
 		h = 4,
@@ -46,6 +47,8 @@ function check_all_actor_collision()
 			if a ~= b then
 				if actor_collision(a, b) then
 					sfx(1)
+					a.hp -= 1
+					b.hp -= 1
 					local dir_a = (b.pos - a.pos):normalize()
 					local dir_b = (a.pos - b.pos):normalize()
 					local force_a = dir_a:proj(a.vel) * a.weight
