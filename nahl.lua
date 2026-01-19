@@ -1,4 +1,13 @@
 timer = 0
+last_pressed = {
+	left = -500,
+	right = -500,
+	up = -500,
+	down = -500,
+	special1 = -500,
+	special2 = -500,
+}
+last_nothing = -600
 
 player = make_actor(17, 32, 32)
 player.w = 3
@@ -18,22 +27,87 @@ ai2.vel = vec2d.new(1, 1)
 ai2.friction = 1
 ai2.weight = 2
 
+function drift(button)
+	player.vel = vec2d.new(0, 0)
+end
+
 function _update60()
 	timer += 1
 	local x = 0
 	local y = 0
+	local pressed = 0
 	if btn(0) then
 		x -= 1
+		last = last_pressed.left
+		if (timer - last) < 45 and (last_nothing > last) then
+			local flag = 1
+			for time in all(last_pressed) do
+				if time > last then
+					flag = 0
+				end
+			end
+			if flag == 1 then
+				drift(0)
+			end
+		end
+		last_pressed.left = timer
+		pressed = 1
 	end
 	if btn(1) then
 		x += 1
+		last = last_pressed.right
+		if (timer - last) < 45 and (last_nothing > last) then
+			local flag = 1
+			for time in all(last_pressed) do
+				if time > last then
+					flag = 0
+				end
+			end
+			if flag == 1 then
+				drift(1)
+			end
+		end
+		last_pressed.right = timer
+		pressed = 1
 	end
 	if btn(2) then
 		y -= 1
+		last = last_pressed.down
+		if (timer - last) < 45 and (last_nothing > last) then
+			local flag = 1
+			for time in all(last_pressed) do
+				if time > last then
+					flag = 0
+				end
+			end
+			if flag == 1 then
+				drift(2)
+			end
+		end
+		last_pressed.down = timer
+		pressed = 1
 	end
 	if btn(3) then
 		y += 1
+		last = last_pressed.up
+		if (timer - last) < 45 and (last_nothing > last) then
+			local flag = 1
+			for time in all(last_pressed) do
+				if time > last then
+					flag = 0
+				end
+			end
+			if flag == 1 then
+				drift(3)
+			end
+		end
+		last_pressed.up = timer
+		pressed = 1
 	end
+	if pressed == 0 then
+		last_nothing = timer
+	end
+
 	ai.vel += vec2d.new(rnd(0.10) - 0.05, rnd(0.10) - 0.05)
 	ai2.vel += vec2d.new(rnd(0.10) - 0.05, rnd(0.10) - 0.05)
 	local input_vec = vec2d.new(x, y)
