@@ -4,9 +4,10 @@ last_pressed = {
 	right = -500,
 	up = -500,
 	down = -500,
-	special1 = -500,
+	special1 = 0,
 	special2 = -500,
 }
+last_button_4 = false
 last_nothing = -600
 
 player = make_actor(17, 32, 32)
@@ -123,13 +124,19 @@ function _update60()
 	local input_vec = vec2d.new(x, y)
 	local input_acc = input_vec:normalize() * player.accel
 	player.vel += input_acc
-	if btn(4) and input_vec:magnitude() > 0 then
-		player.vel = input_vec:normalize() * player.dash_speed
+	if btn(4) and not last_button_4 and input_vec:magnitude() > 0 then
+		
+		if timer - last_pressed.special1 >= 100 then
+			last_pressed.special1 = timer
+			player.vel = input_vec:normalize() * player.dash_speed
+			
+		end
 	end
 	check_all_actor_collision()
 	for act in all(actor) do
 		move_actor(act)
 	end
+	last_button_4 = btn(4)
 end
 function draw_health_bar(x1, y1, x2, y2, color)
 	rect(x1, y1-1, x2, y2+1, 6)
@@ -142,7 +149,11 @@ function draw_health_bar(x1, y1, x2, y2, color)
 	end 
 end
 function draw_dash_cooldown(x1, y1, x2, y2, color)
-	rectfill(x1, y1, x2, y2, color)
+	rect(x1, y1-1, x2, y2+1, 6)
+	local fill_width = min(abs(timer - last_pressed.special1), 100)/100 * (x2-x1)
+	rectfill(x1, y1, fill_width+x1, y2, color)
+	line(x1, y1, x1, y2 , 6)
+	line(x2, y1, x2, y2 , 6)
 end
 function _draw()
 	cls()
