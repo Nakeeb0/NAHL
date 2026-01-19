@@ -51,12 +51,12 @@ function check_all_actor_collision()
 					local force_a = dir_a:proj(a.vel) * a.weight
 					local force_b = dir_b:proj(b.vel) * b.weight
 					if dir_a:dot(a.vel) > 0 then
-						b.vel += force_a
-						a.vel -= (force_a * a.bounce)
+						b.vel += force_a / b.weight
+						a.vel -= (force_a * a.bounce) / a.weight
 					end
 					if dir_b:dot(b.vel) > 0 then
-						a.vel += force_b
-						b.vel -= (force_b * b.bounce)
+						a.vel += force_b / a.weight
+						b.vel -= (force_b * b.bounce) / b.weight
 					end
 				end
 			end
