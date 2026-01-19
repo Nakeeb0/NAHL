@@ -12,8 +12,9 @@ last_nothing = -600
 player = make_actor(17, 32, 32)
 player.w = 3
 player.h = 3
+player.accel = 0.2
 player.weight = 1
-player.friction = 0.97
+player.friction = 0.98
 
 ai = make_actor(3, 64, 64)
 ai.frames = 4
@@ -27,8 +28,16 @@ ai2.vel = vec2d.new(1, 1)
 ai2.friction = 1
 ai2.weight = 2
 
-function drift(button)
-	player.vel = vec2d.new(0, 0)
+function drift(dir, actor)
+	nor = vec2d.new(dir.y, -dir.x):normalize()
+	dir = dir:normalize()
+	vel = actor.vel
+	component_dir = dir:proj(vel)
+	component_nor = nor:proj(vel)
+	if component_dir:dot(dir) < 0 then
+		component_dir = vec2d.new(0, 0)
+	end
+	actor.vel = component_nor * 0.3 + component_dir * 0.8
 end
 
 function _update60()
@@ -39,7 +48,7 @@ function _update60()
 	if btn(0) then
 		x -= 1
 		last = last_pressed.left
-		if (timer - last) < 45 and (last_nothing > last) then
+		if (timer - last) < 45 and (last_nothing > last) and not (btn(1) or btn(2) or btn(3) or btn(4) or btn(5)) then
 			local flag = 1
 			for time in all(last_pressed) do
 				if time > last then
@@ -47,7 +56,7 @@ function _update60()
 				end
 			end
 			if flag == 1 then
-				drift(0)
+				drift(vec2d.new(x, y), player)
 			end
 		end
 		last_pressed.left = timer
@@ -56,7 +65,7 @@ function _update60()
 	if btn(1) then
 		x += 1
 		last = last_pressed.right
-		if (timer - last) < 45 and (last_nothing > last) then
+		if (timer - last) < 45 and (last_nothing > last) and not (btn(2) or btn(3) or btn(4) or btn(5) or btn(0)) then
 			local flag = 1
 			for time in all(last_pressed) do
 				if time > last then
@@ -64,7 +73,7 @@ function _update60()
 				end
 			end
 			if flag == 1 then
-				drift(1)
+				drift(vec2d.new(x, y), player)
 			end
 		end
 		last_pressed.right = timer
@@ -73,7 +82,7 @@ function _update60()
 	if btn(2) then
 		y -= 1
 		last = last_pressed.down
-		if (timer - last) < 45 and (last_nothing > last) then
+		if (timer - last) < 45 and (last_nothing > last) and not (btn(1) or btn(3) or btn(4) or btn(5) or btn(0)) then
 			local flag = 1
 			for time in all(last_pressed) do
 				if time > last then
@@ -81,7 +90,7 @@ function _update60()
 				end
 			end
 			if flag == 1 then
-				drift(2)
+				drift(vec2d.new(x, y), player)
 			end
 		end
 		last_pressed.down = timer
@@ -90,7 +99,7 @@ function _update60()
 	if btn(3) then
 		y += 1
 		last = last_pressed.up
-		if (timer - last) < 45 and (last_nothing > last) then
+		if (timer - last) < 45 and (last_nothing > last) and not (btn(1) or btn(2) or btn(4) or btn(5) or btn(0)) then
 			local flag = 1
 			for time in all(last_pressed) do
 				if time > last then
@@ -98,7 +107,7 @@ function _update60()
 				end
 			end
 			if flag == 1 then
-				drift(3)
+				drift(vec2d.new(x, y), player)
 			end
 		end
 		last_pressed.up = timer
