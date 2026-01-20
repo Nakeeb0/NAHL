@@ -36,6 +36,11 @@ end
 pair_last_hit = {}
 pair_cd = 10
 
+function game_over_screen()
+	map()
+	print("score: " .. score, 64, 64, 6)
+end
+
 function game_over_update()
 	if timer > 50 then
 		run()
@@ -43,6 +48,7 @@ function game_over_update()
 end
 
 function game_over()
+	_dr = game_over_screen
 	_upd = game_over_update
 	timer = 1
 end
@@ -185,7 +191,10 @@ function check_all_actor_collision()
 		if act.dead == true then
 			if act == player then
 				game_over()
+				return
 			end
+			print(act.type)
+			score += 1
 			del(actor, act)
 			del(enemies, act)
 		end

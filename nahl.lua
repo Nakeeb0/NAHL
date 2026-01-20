@@ -1,15 +1,7 @@
-function norm_update()
-	update_dmg_texts()
-	player_input()
-	ai_update()
-	check_all_actor_collision()
-	for act in all(actor) do
-		move_actor(act)
-	end
-end
-
 function _init()
+	_dr = norm_draw
 	_upd = norm_update
+	score = 0
 	timer = 0
 	last_pressed = {
 		left = -500,
@@ -29,9 +21,10 @@ function _init()
 	player.weight = 1
 	player.friction = 0.98
 	player.team = 0
-	player.force_threshold = 0
+	player.hp = 5
+	player.hp_max = 5
+	player.force_threshold = 0.35
 
-	create_ai("straight-laced", 64, 64)
 	create_ai("straight-laced", 64, 64)
 	create_ai("straight-laced", 64, 64)
 end
@@ -41,11 +34,13 @@ function create_ai(type, x, y)
 		a = make_actor(3, x, y)
 		a.type = "straight-laced"
 		a.frames = 4
-		a.max_velocity = 1.5
+		a.max_velocity = 1.11
 		a.accel = 0.01
 		a.friction = 1
 		a.bounce = 1
 		a.weight = 2
+		a.hp_max = 3
+		a.hp = 3
 		add(enemies, a)
 		return a
 	end
@@ -143,6 +138,10 @@ function _update60()
 end
 
 function _draw()
+	_dr()
+end
+
+function norm_draw()
 	cls()
 	draw_health_bar(20, 139, 80, 142, 8)
 	draw_dash_cooldown(94, 139, 140, 142, 7)
@@ -155,5 +154,21 @@ function _draw()
 	map()
 	for act in all(actor) do
 		draw_actor(act)
+	end
+end
+
+function norm_update()
+	update_dmg_texts()
+	player_input()
+	ai_update()
+	check_all_actor_collision()
+	for act in all(actor) do
+		move_actor(act)
+	end
+	if timer % 600 == 0 then
+		create_ai("straight-laced", 64, 64)
+	end
+	if #enemies == 0 then
+		create_ai("straight-laced", 64, 64)
 	end
 end
