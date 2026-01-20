@@ -16,7 +16,7 @@ function make_actor(index, x, y)
 		frames = 6,
 		velocity_cutoff = 0.25,
 		dash_speed = 2.5,
-		hp = 10,
+		hp = 5,
 		hp_max = 10,
 		damage = 1,
 		control = true,
@@ -26,17 +26,36 @@ function make_actor(index, x, y)
 		last_hit = -600,
 		invul_frames = 20,
 		force_threshold = 1.5,
+		dead = false,
 	}
 	add(actor, a)
 	return a
 end
 
-function death()
-	--die :(
-end
-
 pair_last_hit = {}
 pair_cd = 10
+
+function game_over()
+	--nop
+end
+
+function death(a)
+	local sp = a.index + (a.frame or 0)
+	add(death_fx, {
+		sp = sp,
+		x = a.pos.x - a.w,
+		y = a.pos.y - a.h,
+		t = 0,
+		life = 12,
+	})
+	if a == player then
+		sfx(5)
+		game_over()
+	else
+		sfx(6)
+	end
+	a.dead = true
+end
 
 local function pair_key(a, b)
 	local i = a.id
@@ -62,48 +81,6 @@ function can_damage_pair(damager, damaged)
 	end
 	row[j] = timer
 	return true
-end
-
-dmg_texts = {}
-
-function spawn_dmg_text(x, y, dmg, col)
-	add(dmg_texts, {
-		x = x,
-		y = y,
-		vy = -0.6, -- floats up
-		t = 0,
-		life = 30, -- ~0.5 sec at 60fps
-		dmg = dmg,
-		col = col,
-	})
-end
-
-function update_dmg_texts()
-	for i = #dmg_texts, 1, -1 do
-		local d = dmg_texts[i]
-		d.t += 1
-		d.y += d.vy
-		-- little easing: slow rise over time
-		d.vy *= 0.95
-		if d.t >= d.life then
-			deli(dmg_texts, i)
-		end
-	end
-end
-
-function draw_dmg_texts()
-	for d in all(dmg_texts) do
-		local s = "-" .. d.dmg
-		-- optional "pop" upward at start
-		local yy = d.y - (d.t < 6 and 1 or 0)
-		-- fade-ish by switching color near end (cheap fake fade)
-		local col = d.col
-		if d.t > d.life * 0.7 then
-			col = 6
-		end -- darker near end
-
-		print(s, d.x, yy, col)
-	end
 end
 
 function damage_resolve(a, b, force_a, force_b)
@@ -194,20 +171,9 @@ function check_all_actor_collision()
 			end
 		end
 	end
-end
-
-function draw_actor(act)
-	local anim_speed = 6
-	local mag = act.vel:magnitude()
-	if mag >= 4 then
-		anim_speed = 2
-	elseif mag >= 2.5 then
-		anim_speed = 4
+	for act in all(actor) do
+		if act.dead == true then
+			del(actor, act)
+		end
 	end
-	act.frame = flr(act.t / anim_speed) % act.frames
-	act.t += 1
-	if act.vel:magnitude() < act.velocity_cutoff then
-		act.frame = 0
-	end
-	spr(act.index + act.frame, act.pos.x - act.w, act.pos.y - act.h)
 end

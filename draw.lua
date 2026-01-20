@@ -1,4 +1,27 @@
 dmg_texts = {}
+death_fx = {}
+
+function draw_death_fx()
+	for i = #death_fx, 1, -1 do
+		local d = death_fx[i]
+		d.t += 1
+		if d.t > d.life then
+			deli(death_fx, i)
+		end
+	end
+	for d in all(death_fx) do
+		if d.t % 2 == 0 then
+			spr(d.sp, d.x, d.y)
+		else
+			pal(1, 7)
+			pal(2, 7)
+			pal(8, 7)
+			pal(9, 7)
+			spr(d.sp, d.x, d.y)
+			pal()
+		end
+	end
+end
 
 function spawn_dmg_text(x, y, dmg, col)
 	add(dmg_texts, {
