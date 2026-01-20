@@ -3,6 +3,7 @@ version 41
 __lua__
 #include vec2d.lua
 #include collision.lua
+#include draw.lua
 #include actor.lua
 #include nahl.lua
 
