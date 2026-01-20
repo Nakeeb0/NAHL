@@ -25,6 +25,7 @@ function make_actor(index, x, y)
 		team = 1,
 		last_hit = -600,
 		invul_frames = 20,
+		force_threshold = 1.5,
 	}
 	add(actor, a)
 	return a
@@ -108,19 +109,24 @@ end
 function damage_resolve(a, b, force_a, force_b)
 	local damaged = b
 	local damager = a
-	local threshold = 1.5
+	local eps = 0.5
 
-	local ma = force_a:magnitude()
-	local mb = force_b:magnitude()
-	if mb > ma then
+	local mag_damager = force_a:magnitude()
+	local mag_damaged = force_b:magnitude()
+	if mag_damaged > mag_damager then
 		damager, damaged = b, a
-		ma, mb = mb, ma
+		mag_damager, mag_damaged = mag_damaged, mag_damager
 	end
 
 	if not can_damage_pair(damager, damaged) then
 		return
 	end
-	if a.team == b.team or ma == mb or abs(ma - mb) < threshold or timer - damaged.last_hit < damaged.invul_frames then
+	if
+		a.team == b.team
+		or mag_damager - mag_damaged < eps
+		or mag_damager < damaged.force_threshold
+		or timer - damaged.last_hit < damaged.invul_frames
+	then
 		sfx(1)
 		return
 	end
