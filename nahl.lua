@@ -1,11 +1,22 @@
+function norm_update()
+	update_dmg_texts()
+	player_input()
+	ai_update()
+	check_all_actor_collision()
+	for act in all(actor) do
+		move_actor(act)
+	end
+end
+
 function _init()
+	_upd = norm_update
 	timer = 0
 	last_pressed = {
 		left = -500,
 		right = -500,
 		up = -500,
 		down = -500,
-		special1 = 0,
+		special1 = -500,
 		special2 = -500,
 	}
 	last_nothing = -600
@@ -18,7 +29,7 @@ function _init()
 	player.weight = 1
 	player.friction = 0.98
 	player.team = 0
-	player.force_threshold = 1
+	player.force_threshold = 0
 
 	ai = make_actor(3, 64, 64)
 	ai.frames = 4
@@ -39,6 +50,11 @@ function _init()
 	ai2.friction = 1
 	ai2.weight = 2
 	add(enemies, ai2)
+end
+
+function create_ai(type)
+	if type == "random asshole" then
+	end
 end
 
 function drift(dir, actor)
@@ -123,13 +139,7 @@ end
 
 function _update60()
 	timer += 1
-	update_dmg_texts()
-	player_input()
-	ai_update()
-	check_all_actor_collision()
-	for act in all(actor) do
-		move_actor(act)
-	end
+	_upd()
 end
 
 function _draw()

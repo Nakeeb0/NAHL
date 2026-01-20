@@ -16,10 +16,9 @@ function make_actor(index, x, y)
 		frames = 6,
 		velocity_cutoff = 0.25,
 		dash_speed = 2.5,
-		hp = 5,
+		hp = 2,
 		hp_max = 10,
 		damage = 1,
-		control = true,
 		w = 4,
 		h = 4,
 		team = 1,
@@ -27,6 +26,7 @@ function make_actor(index, x, y)
 		invul_frames = 20,
 		force_threshold = 1.5,
 		dead = false,
+		type = "player",
 	}
 	add(actor, a)
 	return a
@@ -35,8 +35,15 @@ end
 pair_last_hit = {}
 pair_cd = 10
 
+function game_over_update()
+	if timer > 50 then
+		run()
+	end
+end
+
 function game_over()
-	--nop
+	_upd = game_over_update
+	timer = 1
 end
 
 function death(a)
@@ -50,7 +57,6 @@ function death(a)
 	})
 	if a == player then
 		sfx(5)
-		game_over()
 	else
 		sfx(6)
 	end
@@ -173,6 +179,9 @@ function check_all_actor_collision()
 	end
 	for act in all(actor) do
 		if act.dead == true then
+			if act == player then
+				game_over()
+			end
 			del(actor, act)
 		end
 	end
