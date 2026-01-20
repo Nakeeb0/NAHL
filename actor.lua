@@ -15,8 +15,9 @@ function make_actor(index, x, y)
 		weight = 1,
 		frames = 6,
 		velocity_cutoff = 0.25,
+		max_velocity = 999,
 		dash_speed = 2.5,
-		hp = 2,
+		hp = 10,
 		hp_max = 10,
 		damage = 1,
 		w = 4,
@@ -138,6 +139,9 @@ function damage_resolve(a, b, force_a, force_b)
 end
 
 function move_actor(a)
+	if a.vel:magnitude() > a.max_velocity then
+		a.vel = a.vel:normalize() * a.max_velocity
+	end
 	if not solid_aabb(a, a.pos.x + a.vel.x, a.pos.y) then
 		a.pos.x += a.vel.x
 	else
@@ -183,6 +187,7 @@ function check_all_actor_collision()
 				game_over()
 			end
 			del(actor, act)
+			del(enemies, act)
 		end
 	end
 end

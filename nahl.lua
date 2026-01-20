@@ -31,29 +31,23 @@ function _init()
 	player.team = 0
 	player.force_threshold = 0
 
-	ai = make_actor(3, 64, 64)
-	ai.frames = 4
-	ai.vel = vec2d.new(1, 1)
-	ai.friction = 1
-	ai.weight = 1.5
-	add(enemies, ai)
-
-	ai3 = make_actor(3, 64, 64)
-	ai3.frames = 4
-	ai3.vel = vec2d.new(1, 1)
-	ai3.friction = 1
-	ai3.weight = 1.5
-	add(enemies, ai3)
-	ai2 = make_actor(3, 90, 90)
-	ai2.frames = 4
-	ai2.vel = vec2d.new(1, 1)
-	ai2.friction = 1
-	ai2.weight = 2
-	add(enemies, ai2)
+	create_ai("straight-laced", 64, 64)
+	create_ai("straight-laced", 64, 64)
+	create_ai("straight-laced", 64, 64)
 end
 
-function create_ai(type)
-	if type == "random asshole" then
+function create_ai(type, x, y)
+	if type == "straight-laced" then
+		a = make_actor(3, x, y)
+		a.type = "straight-laced"
+		a.frames = 4
+		a.max_velocity = 1.5
+		a.accel = 0.01
+		a.friction = 1
+		a.bounce = 1
+		a.weight = 2
+		add(enemies, a)
+		return a
 	end
 end
 
@@ -132,9 +126,15 @@ function player_input()
 end
 
 function ai_update()
-	local speed = 0.2
-	ai.vel += vec2d.new(rnd(speed) - speed * 0.5, rnd(speed) - speed * 0.5)
-	ai2.vel += vec2d.new(rnd(speed) - speed * 0.5, rnd(speed) - speed * 0.5)
+	for enemy in all(enemies) do
+		if enemy.type == "straight-laced" then
+			local dir = enemy.vel:normalize()
+			if enemy.vel:magnitude() == 0 then
+				dir = vec2d.new(rnd(2) - 1, rnd(2) - 1)
+			end
+			enemy.vel += dir * enemy.accel
+		end
+	end
 end
 
 function _update60()
