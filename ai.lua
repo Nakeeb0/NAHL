@@ -16,6 +16,7 @@ function base_ai.new(x, y)
     return a
 end
 
+<<<<<<< HEAD
 local follow_ai = setmetatable({}, base_ai)
 follow_ai.__index = follow_ai
 
@@ -23,3 +24,26 @@ function follow_ai.new(x, y)
     follow = base_ai.new(x, y)
     return follow
 end
+=======
+function co_ghost(ai, start_time, total_time)
+	while true do
+		if timer - start_time >= total_time then
+			ai.ghosted = false
+			return
+		end
+		yield()
+	end
+end
+
+function ai_update()
+	for enemy in all(enemies) do
+		if enemy.type == "straight-laced" then
+			local dir = enemy.vel:normalize()
+			if enemy.vel:magnitude() == 0 then
+				dir = vec2d.new(rnd(2) - 1, rnd(2) - 1)
+			end
+			enemy.vel += dir * enemy.accel
+		end
+	end
+end
+>>>>>>> 98f6eeec6e77fa5cfe461e17b85242657b456351

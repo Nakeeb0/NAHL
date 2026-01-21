@@ -26,8 +26,12 @@ function make_actor(index, x, y)
 		last_hit = -600,
 		invul_frames = 20,
 		force_threshold = 1.5,
-		dead = false,
 		type = "player",
+		flags = {
+			dead = false,
+			ghosted = false,
+			frozen = false,
+		},
 	}
 	add(actor, a)
 	return a
