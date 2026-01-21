@@ -1,9 +1,18 @@
-local base_ai = {}
+base_ai = {}
 base_ai.__index = base_ai
 
 function base_ai.new(x, y)
     a = make_actor(3, x, y)
-    a.type = "default"
+    add(enemies, a)
+    return a
+end
+
+straight_ai = setmetatable({}, base_ai)
+straight_ai.__index = straight_ai
+
+function straight_ai.new(x, y)
+    a = base_ai.new(x, y)
+    a.type = "straight-laced"
     a.frames = 4
     a.max_velocity = 1.11
     a.accel = 0.01
@@ -12,16 +21,7 @@ function base_ai.new(x, y)
     a.weight = 2
     a.hp_max = 3
     a.hp = 3
-    add(enemies, a)
     return a
-end
-
-local follow_ai = setmetatable({}, base_ai)
-follow_ai.__index = follow_ai
-
-function follow_ai.new(x, y)
-    follow = base_ai.new(x, y)
-    return follow
 end
 
 function co_ghost(ai, start_time, total_time)

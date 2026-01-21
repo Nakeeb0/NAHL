@@ -26,8 +26,8 @@ function _init()
 	player.hp_max = 5
 	player.force_threshold = 0.35
 
-	create_ai("straight-laced", 64, 64)
-	create_ai("straight-laced", 64, 64)
+	straight_ai.new(64, 64)
+	straight_ai.new(64, 64)
 end
 
 function _update60()

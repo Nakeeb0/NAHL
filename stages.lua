@@ -40,9 +40,9 @@ function infinite_straight_laced()
 		move_actor(act)
 	end
 	if timer % 600 == 0 then
-		create_ai("straight-laced", 64, 64)
+		straight_ai.new(64, 64)
 	end
 	if #enemies == 0 then
-		create_ai("straight-laced", 64, 64)
+		straight_ai.new(64, 64)
 	end
 end
