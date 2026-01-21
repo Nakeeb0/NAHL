@@ -11,7 +11,7 @@ function make_actor(index, x, y)
 		frame = 0,
 		t = 0,
 		friction = 0.94,
-		bounce = 0.7,
+		bounce = 0.8,
 		weight = 1,
 		frames = 6,
 		velocity_cutoff = 0.25,
@@ -36,24 +36,7 @@ end
 pair_last_hit = {}
 pair_cd = 10
 
-function game_over_screen()
-	map()
-	print("score: " .. score, 64, 64, 6)
-end
-
-function game_over_update()
-	if timer > 50 then
-		run()
-	end
-end
-
-function game_over()
-	_dr = game_over_screen
-	_upd = game_over_update
-	timer = 1
-end
-
-function death(a)
+function actor_death(a)
 	local sp = a.index + (a.frame or 0)
 	add(death_fx, {
 		sp = sp,
@@ -96,13 +79,14 @@ function can_damage_pair(damager, damaged)
 	return true
 end
 
-function damage_resolve(a, b, force_a, force_b)
+function resolve_damage(a, b, mag_a, mag_b)
 	local damaged = b
 	local damager = a
-	local eps = 0.5
+	local eps = 0.3
 
-	local mag_damager = force_a:magnitude()
-	local mag_damaged = force_b:magnitude()
+	local mag_damaged = mag_b
+	local mag_damager = mag_a
+
 	if mag_damaged > mag_damager then
 		damager, damaged = b, a
 		mag_damager, mag_damaged = mag_damaged, mag_damager
@@ -131,21 +115,41 @@ function damage_resolve(a, b, force_a, force_b)
 	else
 		sfx(5)
 	end
-
 	if damaged == player then
 		damaged.hurt_col = 12
 	else
 		damaged.hurt_col = 8
 	end
-
 	spawn_dmg_text(damaged.pos.x - 2, damaged.pos.y - damaged.h - 6, damager.damage, damaged.hurt_col)
 	if damaged.hp <= 0 then
-		death(damaged)
+		actor_death(damaged)
 	end
 end
 
+function resolve_collide(a, b)
+	local dir_a = (b.pos - a.pos):normalize()
+	local dir_b = (a.pos - b.pos):normalize()
+	local force_a = dir_a:proj(a.vel) * a.weight
+	local force_b = dir_b:proj(b.vel) * b.weight
+	local mag_a = (force_a / a.weight):magnitude()
+	local mag_b = (force_b / b.weight):magnitude()
+
+	if dir_a:dot(a.vel) > 0 then
+		b.vel += force_a / b.weight
+		a.vel -= (force_a * a.bounce) / a.weight
+	else
+		mag_a *= -1
+	end
+	if dir_b:dot(b.vel) > 0 then
+		a.vel += force_b / a.weight
+		b.vel -= (force_b * b.bounce) / b.weight
+	else
+		mag_b *= -1
+	end
+	resolve_damage(a, b, mag_a, mag_b)
+end
 function move_actor(a)
-	--a.vel += (vec2d.new(80-a.pos.x, 80-a.pos.y):normalize()*0.05) -- experimenting with a "black hole" at the center 
+	--a.vel += (vec2d.new(80-a.pos.x, 80-a.pos.y):normalize()*0.05) -- experimenting with a "black hole" at the center
 	if a.vel:magnitude() > a.max_velocity then
 		a.vel = a.vel:normalize() * a.max_velocity
 	end
@@ -164,30 +168,7 @@ function move_actor(a)
 	a.vel *= a.friction
 end
 
-function check_all_actor_collision()
-	for i = 1, #actor - 1 do
-		local a = actor[i]
-		for j = i + 1, #actor do
-			local b = actor[j]
-			if a ~= b then
-				if actor_collision(a, b) then
-					local dir_a = (b.pos - a.pos):normalize()
-					local dir_b = (a.pos - b.pos):normalize()
-					local force_a = dir_a:proj(a.vel) * a.weight
-					local force_b = dir_b:proj(b.vel) * b.weight
-					if dir_a:dot(a.vel) > 0 then
-						b.vel += force_a / b.weight
-						a.vel -= (force_a * a.bounce) / a.weight
-					end
-					if dir_b:dot(b.vel) > 0 then
-						a.vel += force_b / a.weight
-						b.vel -= (force_b * b.bounce) / b.weight
-					end
-					damage_resolve(a, b, force_a / a.weight, force_b / b.weight)
-				end
-			end
-		end
-	end
+function check_death()
 	for act in all(actor) do
 		if act.dead == true then
 			if act == player then
