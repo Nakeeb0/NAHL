@@ -15,6 +15,16 @@ function create_ai(type, x, y)
 	end
 end
 
+function co_ghost(ai, start_time, total_time)
+	while true do
+		if timer - start_time >= total_time then
+			ai.ghosted = false
+			return
+		end
+		yield()
+	end
+end
+
 function ai_update()
 	for enemy in all(enemies) do
 		if enemy.type == "straight-laced" then

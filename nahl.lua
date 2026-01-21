@@ -12,6 +12,7 @@ function _init()
 		special2 = -500,
 	}
 	last_nothing = -600
+	asdf = 5
 
 	enemies = {}
 	player = make_actor(17, 32, 32)

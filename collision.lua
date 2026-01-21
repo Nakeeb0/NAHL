@@ -30,7 +30,7 @@ function check_all_actor_collision()
 		local a = actor[i]
 		for j = i + 1, #actor do
 			local b = actor[j]
-			if a ~= b then
+			if a ~= b and not a.ghosted and not b.ghosted then
 				if actor_collision(a, b) then
 					resolve_collide(a, b)
 				end
