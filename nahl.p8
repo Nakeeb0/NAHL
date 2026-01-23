@@ -8,6 +8,7 @@ __lua__
 #include ai.lua
 #include stages.lua
 #include player.lua
+#include scheduler.lua
 #include nahl.lua
 
 __gfx__

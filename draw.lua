@@ -24,43 +24,40 @@ function draw_death_fx()
 end
 
 function spawn_dmg_text(x, y, dmg, col)
-	add(dmg_texts, {
-		x = x,
-		y = y,
-		vy = -0.6, -- floats up
-		t = 0,
-		life = 30, -- ~0.5 sec at 60fps
-		dmg = dmg,
-		col = col,
-	})
-end
+	local isrunning, t, life, vy = true, 0, 30, -0.6
+	add_update_coroutine(function()
+		while true do
+			t += 1
+			y += vy
+			-- little easing: slow rise over time
+			vy *= 0.95
 
-function update_dmg_texts()
-	for i = #dmg_texts, 1, -1 do
-		local d = dmg_texts[i]
-		d.t += 1
-		d.y += d.vy
-		-- little easing: slow rise over time
-		d.vy *= 0.95
-		if d.t >= d.life then
-			deli(dmg_texts, i)
+			if t >= life then
+				isrunning = false
+				break
+			else
+				yield()
+			end
 		end
-	end
-end
+	end)
+	add_draw_coroutine(function()
+		while true do
+			local s = "-" .. dmg
+			-- optional "pop" upward at start
+			local yy = y - (t < 6 and 1 or 0)
+			-- fade-ish by switching color near end (cheap fake fade)
+			if t > life * 0.7 then
+				col = 6
+			end -- darker near end
 
-function draw_dmg_texts()
-	for d in all(dmg_texts) do
-		local s = "-" .. d.dmg
-		-- optional "pop" upward at start
-		local yy = d.y - (d.t < 6 and 1 or 0)
-		-- fade-ish by switching color near end (cheap fake fade)
-		local col = d.col
-		if d.t > d.life * 0.7 then
-			col = 6
-		end -- darker near end
-
-		print(s, d.x, yy, col)
-	end
+			print(s, x, yy, col)
+			if not isrunning then
+				break
+			else
+				yield()
+			end
+		end
+	end)
 end
 
 function draw_actor(act)

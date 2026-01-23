@@ -33,8 +33,10 @@ end
 function _update60()
 	timer += 1
 	_upd()
+	run_update_coroutines()
 end
 
 function _draw()
 	_dr()
+	run_draw_coroutines()
 end
