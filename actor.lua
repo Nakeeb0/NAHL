@@ -83,11 +83,11 @@ function can_damage_pair(damager, damaged)
 	return true
 end
 
-function set_invulnerable(a)
+function set_invulnerable(a, frames)
 	a.invulnerable = true
 	local t = 0
 	add_update_coroutine(function()
-		while t < a.invul_frames do
+		while t < frames do
 			t += 1
 			yield()
 		end
@@ -122,7 +122,7 @@ function resolve_damage(a, b, mag_a, mag_b)
 	end
 
 	damaged.hp -= damager.damage
-	set_invulnerable(damaged)
+	set_invulnerable(damaged, damaged.invul_frames)
 
 	if damaged == player then
 		sfx(3)
