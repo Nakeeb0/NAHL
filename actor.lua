@@ -23,14 +23,14 @@ function make_actor(index, x, y)
 		w = 4,
 		h = 4,
 		team = 1,
-		last_hit = -600,
-		invul_frames = 20,
+		invul_frames = 30,
 		force_threshold = 1.5,
 		type = "player",
 		flags = {
 			dead = false,
 			ghosted = false,
 			frozen = false,
+			invulnerable = false,
 		},
 	}
 	add(actor, a)
@@ -83,6 +83,18 @@ function can_damage_pair(damager, damaged)
 	return true
 end
 
+function set_invulnerable(a)
+	a.invulnerable = true
+	local t = 0
+	add_update_coroutine(function()
+		while t < a.invul_frames do
+			t += 1
+			yield()
+		end
+		a.invulnerable = false
+	end)
+end
+
 function resolve_damage(a, b, mag_a, mag_b)
 	local damaged = b
 	local damager = a
@@ -103,14 +115,14 @@ function resolve_damage(a, b, mag_a, mag_b)
 		a.team == b.team
 		or mag_damager - mag_damaged < eps
 		or mag_damager < damaged.force_threshold
-		or timer - damaged.last_hit < damaged.invul_frames
+		or damaged.invulnerable == true
 	then
 		sfx(1)
 		return
 	end
 
 	damaged.hp -= damager.damage
-	damaged.last_hit = timer
+	set_invulnerable(damaged)
 
 	if damaged == player then
 		sfx(3)
