@@ -1,6 +1,6 @@
 running_update_coroutines = {}
 running_draw_coroutines = {}
-
+paused = false
 function add_update_coroutine(func)
     running_update_coroutines[#running_update_coroutines+1] = cocreate(func)
 end
@@ -22,8 +22,12 @@ function base_run_coroutines(target_coroutines)
 end
 
 function run_update_coroutines()
-    base_run_coroutines(running_update_coroutines)
+    if not paused then
+        base_run_coroutines(running_update_coroutines)
+    end
 end
 function run_draw_coroutines()
-    base_run_coroutines(running_draw_coroutines)
+    if not paused then 
+        base_run_coroutines(running_draw_coroutines)
+    end
 end

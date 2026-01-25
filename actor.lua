@@ -202,6 +202,9 @@ function check_death()
 			else
 				score += 1
 			end
+			if score > 0 and score % 5 == 0 then
+    			start_level_up()
+			end
 			del(actor, act)
 			del(enemies, act)
 		end
