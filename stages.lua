@@ -37,10 +37,8 @@ function infinite_straight_laced()
 	for act in all(actor) do
 		move_actor(act)
 	end
-	if timer % 600 == 0 then
-		straight_ai.new(64, 64)
-	end
 	if #enemies == 0 then
-		straight_ai.new(64, 64)
+		straight_boss.new(64, 64)
+		straight_boss:create_minions(400)
 	end
 end

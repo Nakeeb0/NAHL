@@ -22,6 +22,7 @@ function make_actor(index, x, y)
 		damage = 1,
 		w = 4,
 		h = 4,
+		force = 1,
 		team = 1,
 		invul_frames = 30,
 		force_threshold = 1.5,
@@ -145,8 +146,8 @@ end
 function resolve_collide(a, b)
 	local dir_a = (b.pos - a.pos):normalize()
 	local dir_b = (a.pos - b.pos):normalize()
-	local force_a = dir_a:proj(a.vel) * a.weight
-	local force_b = dir_b:proj(b.vel) * b.weight
+	local force_a = dir_a:proj(a.vel) * a.weight * a.force
+	local force_b = dir_b:proj(b.vel) * b.weight * b.force
 	local mag_a = (force_a / a.weight):magnitude()
 	local mag_b = (force_b / b.weight):magnitude()
 

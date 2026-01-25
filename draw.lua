@@ -73,7 +73,12 @@ function draw_actor(act)
 	if act.vel:magnitude() < act.velocity_cutoff then
 		act.frame = 0
 	end
-	spr(act.index + act.frame, act.pos.x - act.w, act.pos.y - act.h)
+
+	local tile_height = flr((act.h * 2 + 7) / 8)
+	local tile_width = flr((act.w * 2 + 7) / 8)
+	local sx = ((act.index + act.frame * tile_width) % 16) * 8
+	local sy = flr((act.index + act.frame * tile_height) / 16) * 8
+	sspr(sx, sy, tile_width * 8, tile_width * 8, act.pos.x - act.w, act.pos.y - act.h)
 end
 
 function draw_health_bar(x1, y1, x2, y2, color)

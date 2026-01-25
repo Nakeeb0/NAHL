@@ -26,8 +26,8 @@ function _init()
 	player.hp_max = 5
 	player.force_threshold = 0.35
 
-	straight_ai.new(64, 64)
-	straight_ai.new(64, 64)
+	a = straight_boss.new(100, 100)
+	a:create_minions(400)
 end
 
 function _update60()
