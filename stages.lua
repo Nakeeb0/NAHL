@@ -52,6 +52,7 @@ function start_level_up()
     selected_option = 1
 
     -- 3. Switch Game State (Pause the game)
+	paused = true
     _upd = level_up_update
     _dr = level_up_draw
 end
@@ -70,6 +71,7 @@ function level_up_update()
         -- Apply the powerup
         level_up_options[selected_option].apply(player)
         -- Resume Game
+		paused = false
         _upd = infinite_straight_laced
         _dr = normal_draw
     end
