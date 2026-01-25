@@ -25,6 +25,54 @@ function _init()
 	player.hp = 5
 	player.hp_max = 5
 	player.force_threshold = 0.35
+	-- Define the available powerups
+	all_powerups = {
+		{
+			name = "Repair",
+			desc = "Heal 1 HP",
+			apply = function(p) 
+				p.hp = min(p.hp + 1, p.hp_max)
+			end,
+			is_eligible = function(p)
+				return p.hp < p.hp_max 
+			end
+		},
+		{
+			name = "Sharpen",
+			desc = "Damage +1",
+			apply = function(p) 
+				p.damage += 1 
+			end,
+			is_eligible = function(p)
+    			return true
+			end
+
+		},
+		{ 
+			--todo: revise the limit
+			name = "Turbo",
+			desc = "acceleration +10%",
+			apply = function(p) 
+				p.accel = min(p.accel*1.1,0.45) 
+			end,
+			is_eligible = function(p)
+				return p.accel < 0.45
+			end
+		},
+		{
+			name = "Sturdy",
+			desc = "Max HP +1",
+			apply = function(p) 
+				p.hp_max += 1 
+			end,
+			is_eligible = function(p)
+				return true
+			end
+		}
+	}
+
+	level_up_options = {}
+	selected_option = 1
 
 	straight_ai.new(64, 64)
 	straight_ai.new(64, 64)

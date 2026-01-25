@@ -30,6 +30,52 @@ function normal_draw()
 	end
 end
 
+function start_level_up()
+    -- 1. Pick 3 random UNIQUE powerups
+    level_up_options = {}
+    local choices = {}
+    for i = 1, #all_powerups do
+		if all_powerups[i].is_eligible(player) then
+        	add(choices, all_powerups[i])
+		end
+    end
+
+    for i = 1, min(3,#choices) do
+        if #choices > 0 then
+            local idx = flr(rnd(#choices)) + 1
+            add(level_up_options, choices[idx])
+            deli(choices, idx)
+        end
+    end
+
+    -- 2. Reset selection
+    selected_option = 1
+
+    -- 3. Switch Game State (Pause the game)
+    _upd = level_up_update
+    _dr = level_up_draw
+end
+
+function level_up_update()
+    -- Left / Right to select
+    if btnp(0) then
+        selected_option = max(1, selected_option - 1)
+    end
+    if btnp(1) then
+        selected_option = min(#level_up_options, selected_option + 1)
+    end
+
+    -- Z or X to confirm
+    if btnp(4) or btnp(5) then
+        -- Apply the powerup
+        level_up_options[selected_option].apply(player)
+        -- Resume Game
+        _upd = infinite_straight_laced
+        _dr = normal_draw
+    end
+end
+
+
 function infinite_straight_laced()
 	player_input()
 	ai_update()
