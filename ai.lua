@@ -40,7 +40,7 @@ function straight_boss.new(x, y)
 	a.weight = 4
 	a.hp_max = 7
 	a.force_threshold = 2.3
-	a.hp = 1
+	a.hp = 7
 	a.w = 7
 	a.h = 7
 	a.velocity_cutoff = 0.1
