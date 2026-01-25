@@ -1,20 +1,28 @@
 particles = {}
-function spawn_particle(x, y)
-  local p = {
-    x = x,
-    y = y,
-    dx = rnd(2)-1,   -- -1 to 1
-    dy = rnd(2)-1,
-    t = 30,          -- lifetime in frames
-    c = 7            -- white
-  }
-  add(particles, p)
-end
-
 function explosion(x, y, count)
   for i=1,count do
-    spawn_particle(x, y)
+     local p = {
+        x = x,
+        y = y,
+        dx = rnd(2)-1,   -- -1 to 1
+        dy = rnd(2)-1,
+        t = 30,          -- lifetime in frames
+        c = 7            -- white
+    }
+    add(particles, p)
   end
+end
+
+function spawn_trail(x, y, col)
+  local p = {
+    x = x + rnd(2)-1,
+    y = y + rnd(2)-1,
+    dx = (rnd()-0.5)*0.5,
+    dy = (rnd()-0.5)*0.5,
+    t = 20,
+    c = col or 6
+  }
+  add(particles, p)
 end
 
 function update_particles()

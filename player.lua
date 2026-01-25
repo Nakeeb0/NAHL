@@ -44,6 +44,9 @@ function player_input()
 			sfx(2)
 		end
 	end
+	if input_vec:magnitude() > 0 then
+		spawn_trail(player.pos.x, player.pos.y, 8)
+	end
 end
 
 function drift(dir, actor)
