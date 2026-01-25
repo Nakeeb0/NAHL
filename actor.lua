@@ -27,12 +27,10 @@ function make_actor(index, x, y)
 		invul_frames = 30,
 		force_threshold = 1.5,
 		type = "player",
-		flags = {
-			dead = false,
-			ghosted = false,
-			frozen = false,
-			invulnerable = false,
-		},
+		dead = false,
+		ghosted = false,
+		frozen = false,
+		invulnerable = false,
 	}
 	add(actor, a)
 	return a
@@ -146,10 +144,10 @@ end
 function resolve_collide(a, b)
 	local dir_a = (b.pos - a.pos):normalize()
 	local dir_b = (a.pos - b.pos):normalize()
-	local force_a = dir_a:proj(a.vel) * a.weight * a.force
-	local force_b = dir_b:proj(b.vel) * b.weight * b.force
-	local mag_a = (force_a / a.weight):magnitude()
-	local mag_b = (force_b / b.weight):magnitude()
+	local force_a = dir_a:proj(a.vel) * a.weight
+	local force_b = dir_b:proj(b.vel) * b.weight
+	local mag_a = (force_a * a.force / a.weight):magnitude()
+	local mag_b = (force_b * b.force / b.weight):magnitude()
 
 	if dir_a:dot(a.vel) > 0 then
 		b.vel += force_a / b.weight

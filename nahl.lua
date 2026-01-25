@@ -18,13 +18,15 @@ function _init()
 	player = make_actor(17, 32, 32)
 	player.w = 3
 	player.h = 3
-	player.accel = 0.11
+	player.accel = 0.1
+	player.force = 1.3
 	player.weight = 1
-	player.friction = 0.98
+	player.friction = 0.975
 	player.team = 0
 	player.hp = 5
 	player.hp_max = 5
-	player.force_threshold = 0.35
+
+	player.force_threshold = 0.5
 
 	a = straight_boss.new(100, 100)
 	a:create_minions(400)

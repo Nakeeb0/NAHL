@@ -33,18 +33,18 @@ function straight_boss.new(x, y)
 	a.type = "straight-laced-boss"
 	a.frames = 4
 	a.damage = 2
-	a.max_velocity = 0.6
+	a.max_velocity = 1
 	a.accel = 0.01
 	a.friction = 1
 	a.bounce = 1
-	a.weight = 5
-	a.hp_max = 15
+	a.weight = 4
+	a.hp_max = 7
 	a.force_threshold = 2.3
-	a.hp = 15
+	a.hp = 7
 	a.w = 7
 	a.h = 7
 	a.velocity_cutoff = 0.1
-	a.force = 2.3
+	a.force = 2.5
 	a.index = 33
 	return a
 end
@@ -52,7 +52,7 @@ end
 function straight_boss:create_minions(time)
 	local t = 0
 	add_update_coroutine(function()
-		while self do
+		while self.dead == false do
 			if t == time then
 				a = straight_ai.new(self.pos.x, self.pos.y)
 				a.hp = 2
