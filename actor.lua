@@ -138,6 +138,7 @@ function resolve_damage(a, b, mag_a, mag_b)
 	spawn_dmg_text(damaged.pos.x - 2, damaged.pos.y - damaged.h - 6, damager.damage, damaged.hurt_col)
 	if damaged.hp <= 0 then
 		actor_death(damaged)
+		explosion(damaged.pos.x, damaged.pos.y, 10)
 	end
 end
 
