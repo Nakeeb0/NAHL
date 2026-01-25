@@ -99,3 +99,34 @@ function draw_dash_cooldown(x1, y1, x2, y2, color)
 	line(x1, y1, x1, y2, 6)
 	line(x2, y1, x2, y2, 6)
 end
+
+function level_up_draw()
+    -- Draw the game behind the menu 
+    normal_draw()
+
+    -- Draw a dark box for the menu
+    rectfill(24, 40, 135, 90, 0)
+    rect(24, 40, 135, 90, 7)
+
+    print("POWER UP! CHOOSE ONE:", 30, 45, 7)
+
+    -- Draw the 3 options
+    local start_x = 31
+    for i = 1, #level_up_options do
+        local opt = level_up_options[i]
+        local col = 6 -- Grey default
+
+        -- Highlight selected option
+        if i == selected_option then
+            col = 11 -- Green for selected
+            -- TODO : handle the different text lengths better
+            print(">", start_x + (i - 1) * 34 - 4, 60, 11)
+
+            -- Draw Description for selected item at the bottom
+            print(opt.desc, start_x, 80, 7)
+        end
+
+        -- Draw Option Name
+        print(opt.name, start_x + (i - 1) * 34, 60, col)
+    end
+end

@@ -193,6 +193,9 @@ function check_death()
 			end
 			print(act.type)
 			score += 1
+			if score > 0 and score % 5 == 0 then
+    			start_level_up()
+			end
 			del(actor, act)
 			del(enemies, act)
 		end
