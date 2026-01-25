@@ -31,6 +31,7 @@ function make_actor(index, x, y)
 		ghosted = false,
 		frozen = false,
 		invulnerable = false,
+		power_ups = 0
 	}
 	add(actor, a)
 	return a
@@ -202,7 +203,7 @@ function check_death()
 			else
 				score += 1
 			end
-			if score > 0 and score % 5 == 0 then
+			if score > 0 and flr(score / 5) > player.power_ups then
     			start_level_up()
 			end
 			del(actor, act)

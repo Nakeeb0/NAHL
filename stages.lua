@@ -32,6 +32,7 @@ end
 
 function start_level_up()
     -- 1. Pick 3 random UNIQUE powerups
+	player.power_ups += 1
     level_up_options = {}
     local choices = {}
     for i = 1, #all_powerups do
@@ -71,10 +72,14 @@ function level_up_update()
         -- Apply the powerup
         level_up_options[selected_option].apply(player)
         -- Resume Game
-		paused = false
-        _upd = infinite_straight_laced
-        _dr = normal_draw
-    end
+		if score > 0 and flr(score / 5) > player.power_ups then
+			start_level_up()
+		else 
+			paused = false
+			_upd = infinite_straight_laced
+			_dr = normal_draw
+		end
+	end
 end
 
 
