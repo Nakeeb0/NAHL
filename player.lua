@@ -1,3 +1,5 @@
+trail_running_for = 0
+last_input = false
 function player_input()
 	local x = 0
 	local y = 0
@@ -44,11 +46,20 @@ function player_input()
 			sfx(2)
 		end
 	end
-	if input_vec:magnitude() > 0 then
-		spawn_trail(player.pos.x, player.pos.y, 8)
-	end
-end
 
+	if input_vec:magnitude() == 0 and last_input == true then
+		trail_running_for = player.vel:magnitude() * 20
+	else
+		last_input = false
+		trail_running_for -= 1
+	end
+
+	if input_vec:magnitude() > 0 or trail_running_for > 0 then
+		count = player.vel:magnitude()
+		spawn_trail(player.pos.x, player.pos.y, 8, count)
+	end
+	last_input = (input_vec:magnitude() > 0)
+end
 function drift(dir, actor)
 	nor = vec2d.new(dir.y, -dir.x):normalize()
 	dir = dir:normalize()
@@ -60,7 +71,6 @@ function drift(dir, actor)
 	end
 	actor.vel = component_nor * 0.3 + component_dir * 0.8
 end
-
 function check_double_tap(x, y, player, last)
 	if (timer - last) < 45 and (last_nothing > last) then
 		local flag = 1

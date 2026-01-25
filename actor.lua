@@ -138,7 +138,11 @@ function resolve_damage(a, b, mag_a, mag_b)
 	spawn_dmg_text(damaged.pos.x - 2, damaged.pos.y - damaged.h - 6, damager.damage, damaged.hurt_col)
 	if damaged.hp <= 0 then
 		actor_death(damaged)
-		explosion(damaged.pos.x, damaged.pos.y, 10)
+		if damaged.type == "straight-laced-boss" then
+			explosion(damaged.pos.x, damaged.pos.y, 50)
+		else
+			explosion(damaged.pos.x, damaged.pos.y, 10)
+		end
 	end
 end
 
@@ -151,6 +155,8 @@ function resolve_collide(a, b)
 	local mag_b = (force_b * b.force / b.weight):magnitude()
 
 	if dir_a:dot(a.vel) > 0 then
+		ppos = dir_a * a.w / (a.w + b.w)
+		collision_particles(a.pos.x + ppos.x , b.pos.y + ppos.y , max(a.vel:magnitude()*3, b.vel:magnitude()*3))
 		b.vel += force_a / b.weight
 		a.vel -= (force_a * a.bounce) / a.weight
 	else
@@ -191,8 +197,11 @@ function check_death()
 				game_over()
 				return
 			end
-			print(act.type)
-			score += 1
+			if act.type == "straight-laced-boss" then
+				score += 5
+			else
+				score += 1
+			end
 			del(actor, act)
 			del(enemies, act)
 		end
