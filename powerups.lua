@@ -26,7 +26,7 @@ all_powerups = {
         name = "turbo",
         desc = "acceleration +10%",
         apply = function(p) 
-            p.accel = min(p.accel*1.25,0.45) 
+            p.accel = min(p.accel*1.1,0.45) 
         end,
         is_eligible = function(p)
             return p.accel < 0.45

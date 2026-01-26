@@ -39,9 +39,9 @@ function _init()
 
 	player.force_threshold = 0.5
 
-	local a = straight_boss.new(100, 100)
-	a:create_minions(400)
-	local b = follower_boss.new(60,60)
+	-- local a = straight_boss.new(100, 100)
+	-- a:create_minions(400)
+	-- local b = follower_boss.new(60,60)
 
 end
 

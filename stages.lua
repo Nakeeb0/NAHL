@@ -80,7 +80,7 @@ function level_up_update()
         -- Apply the powerup
         level_up_options[selected_option].apply(player)
         -- Resume Game
-		if score > 0 and flr(score / 5) > player.power_ups then
+		if score > 0 and flr(score / 15) > player.power_ups then
 			start_level_up()
 		else 
 			paused = false
@@ -98,10 +98,28 @@ function infinite_straight_laced()
 	for act in all(actor) do
 		move_actor(act)
 	end
+	function roll_xy()
+		local x = 128
+		local y = 128
+		while true do
+			x = rng(32,128)
+			y = rng(32,128)
+			local v = vec2d.new(x,y)
+			local dist = (v-player.pos):magnitude()
+			printh('dist: '..dist..' x= '..x..' y='..y..' px='..player.pos.x..' py= '..player.pos.y,"debug.txt")
+			if (v-player.pos):magnitude()>64 then
+				break
+			end
+		end
+		return x,y
+	end
 	if #enemies <= player.hard_mode then
-		a = straight_boss.new(64, 64)
-		b = follower_boss.new(50,50)
+		local x,y = roll_xy()
+		local a = straight_boss.new(x, y)
 		a:create_minions(400)
+		x,y = roll_xy()
+		local b = follower_boss.new(x,y)
+		
 		
 	end
 end
