@@ -116,10 +116,13 @@ function infinite_straight_laced()
 	end
 	if #enemies <= player.hard_mode then
 		local x,y = roll_xy()
-		local a = straight_boss.new(x, y)
-		a:create_minions(400)
-		x,y = roll_xy()
-		local b = follower_boss.new(x,y)
+		-- local a = straight_boss.new(x, y)
+		-- a:create_minions(400)
+		-- x,y = roll_xy()
+		-- local b = follower_boss.new(x,y)
+		-- x,y = roll_xy()
+		local c = dasher_ai.new(x,y)
+		c:dash(100)
 		
 		
 	end

@@ -12,6 +12,7 @@ straight_ai.__index = straight_ai
 
 function straight_ai.new(x, y)
 	local a = base_ai.new(x, y)
+	setmetatable(a, straight_ai)
 	a.type = "straight-laced"
 	a.frames = 4
 	a.max_velocity = 1.11
@@ -90,6 +91,40 @@ function follower_boss.new(x, y)
 	return a
 end
 
+dasher_ai = setmetatable({}, base_ai)
+dasher_ai.__index = dasher_ai
+
+function dasher_ai.new(x, y)
+	local a = base_ai.new(x, y)
+	setmetatable(a, dasher_ai)
+	a.type = "dasher"
+	a.frames = 3
+	a.max_velocity = 3
+	a.accel = 12
+	a.friction = 0.97
+	a.bounce = 1
+	a.weight = 2
+	a.hp_max = 3
+	a.hp = 3
+	a.index = 67
+	return a
+end
+
+function dasher_ai:dash(time)
+	local t = 0
+	add_update_coroutine(function()
+		while self.dead == false do
+			if t == time then
+				local dir = (player.pos - self.pos):normalize()
+				self.vel = dir * self.accel
+				t = -1
+			end
+			t += 1
+			yield()
+		end
+	end)
+end
+
 function ai_update()
 	for enemy in all(enemies) do
 		if enemy.type == "straight-laced" or enemy.type == "straight-laced-boss" then
@@ -98,8 +133,8 @@ function ai_update()
 				dir = vec2d.new(rnd(2) - 1, rnd(2) - 1)
 			end
 			enemy.vel += dir * enemy.accel
-		end
-		if enemy.type == "follower-boss" then
+
+		elseif enemy.type == "follower-boss" then
 			local dir = player.pos-enemy.pos	
 			enemy.vel += dir * enemy.accel
 		end
