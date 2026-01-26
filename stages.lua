@@ -22,7 +22,15 @@ function normal_draw()
 	draw_death_fx()
 	room_x = flr((player.pos.x - 16) / 128)
 	room_y = flr((player.pos.y - 16) / 128)
-	camera(room_x * 128 + 16, room_y * 128 + 16)
+	-- rng(10,20)
+	shake_x = 0
+	shake_y = 0
+	if shake_timer>0 then 
+		shake_x = rng(-shake_factor,shake_factor)
+		shake_y = rng(-shake_factor,shake_factor)
+		shake_timer = shake_timer-1
+	end
+	camera(room_x * 128 + 16 + shake_x, room_y * 128 + 16 + shake_y)
 
 	map()
 	for act in all(actor) do
@@ -90,8 +98,10 @@ function infinite_straight_laced()
 	for act in all(actor) do
 		move_actor(act)
 	end
-	if #enemies == 0 then
+	if #enemies <= player.hard_mode then
 		a = straight_boss.new(64, 64)
+		b = follower_boss.new(50,50)
 		a:create_minions(400)
+		
 	end
 end

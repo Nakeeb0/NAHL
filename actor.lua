@@ -1,7 +1,11 @@
 actor = {}
 next_actor_id = 1
+function rng(l, r)
+	return rnd(r-l+1)+l
+end
+
 function make_actor(index, x, y)
-	a = {
+	local a = {
 		index = index,
 		pos = vec2d.new(x, y),
 		vel = vec2d.new(0, 0),
@@ -31,7 +35,8 @@ function make_actor(index, x, y)
 		ghosted = false,
 		frozen = false,
 		invulnerable = false,
-		power_ups = 0
+		power_ups = 0,
+		hard_mode = 0
 	}
 	add(actor, a)
 	return a
@@ -136,6 +141,14 @@ function resolve_damage(a, b, mag_a, mag_b)
 	else
 		damaged.hurt_col = 8
 	end
+
+	--if a collision is BIG (todo, define big..), make the camera shake
+	--right now i'm multiplying the magnitude difference with the max weight with some coeff
+	shake_timer = min(max_shake_duration,shake_duration_coeff * (mag_damager-mag_damaged)*max(a.weight,b.weight))
+	--+0.5 to round
+	shake_factor = min(max_shake_amount,flr((mag_damager-mag_damaged)*shake_amount_coeff*max(a.weight,b.weight)+0.5))
+	printh("ce "..shake_timer..' sf '..shake_factor..' maga'..mag_damager..' magb'..mag_damaged,"debug.txt")
+	
 	spawn_dmg_text(damaged.pos.x - 2, damaged.pos.y - damaged.h - 6, damager.damage, damaged.hurt_col)
 	if damaged.hp <= 0 then
 		actor_death(damaged)
@@ -154,10 +167,13 @@ function resolve_collide(a, b)
 	local force_b = dir_b:proj(b.vel) * b.weight
 	local mag_a = (force_a * a.force / a.weight):magnitude()
 	local mag_b = (force_b * b.force / b.weight):magnitude()
+	
 
 	if dir_a:dot(a.vel) > 0 then
 		ppos = dir_a * a.w / (a.w + b.w)
 		collision_particles(a.pos.x + ppos.x , b.pos.y + ppos.y , max(a.vel:magnitude()*3, b.vel:magnitude()*3))
+		
+		
 		b.vel += force_a / b.weight
 		a.vel -= (force_a * a.bounce) / a.weight
 	else
@@ -169,6 +185,7 @@ function resolve_collide(a, b)
 	else
 		mag_b *= -1
 	end
+	
 	resolve_damage(a, b, mag_a, mag_b)
 end
 function move_actor(a)
@@ -199,6 +216,8 @@ function check_death()
 				return
 			end
 			if act.type == "straight-laced-boss" then
+				score += 4
+			elseif act.type == "follower-boss" then
 				score += 5
 			else
 				score += 1

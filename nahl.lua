@@ -3,6 +3,11 @@ function _init()
 	_upd = infinite_straight_laced
 	score = 0
 	timer = 0
+	shake_timer = 0
+	shake_amount_coeff = 0.5
+	shake_duration_coeff = 0.4
+	max_shake_amount = 8
+	max_shake_duration = 12
 	last_pressed = {
 		left = -500,
 		right = -500,
@@ -18,14 +23,17 @@ function _init()
 	player = make_actor(17, 32, 32)
 	player.w = 3
 	player.h = 3
-	player.accel = 0.1
-	player.force = 1.3
+	player.accel = 0.3
+	player.force = 1.6
 	player.weight = 1
 	player.friction = 0.975
 	player.team = 0
-	player.hp = 5
-	player.hp_max = 5
+	player.hp = 10
+	player.hp_max = 10
 	player.force_threshold = 0.35
+	player.damage = 10
+	player.hard_mode = 0
+	player.type = "player"
 	-- Define the available powerups
 	all_powerups = {
 		{
@@ -51,10 +59,11 @@ function _init()
 		},
 		{ 
 			--todo: revise the limit
+			
 			name = "Turbo",
-			desc = "acceleration +10%",
+			desc = "acceleration +25%",
 			apply = function(p) 
-				p.accel = min(p.accel*1.1,0.45) 
+				p.accel = min(p.accel*1.25,0.45) 
 			end,
 			is_eligible = function(p)
 				return p.accel < 0.45
@@ -65,6 +74,28 @@ function _init()
 			desc = "Max HP +1",
 			apply = function(p) 
 				p.hp_max += 1 
+			end,
+			is_eligible = function(p)
+				return false
+			end
+		}
+		,
+		{
+			name = "Harder",
+			desc = "surprise!!",
+			apply = function(p) 
+				p.hard_mode = p.hard_mode+1
+			end,
+			is_eligible = function(p)
+				return true
+			end
+		}
+		,
+		{
+			name = "Fat",
+			desc = "More mass",
+			apply = function(p) 
+				p.weight = p.weight+1
 			end,
 			is_eligible = function(p)
 				return true
@@ -83,6 +114,7 @@ end
 
 function _update60()
 	timer += 1
+	
 	_upd()
 	run_update_coroutines()
 end
