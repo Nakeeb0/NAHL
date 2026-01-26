@@ -4,10 +4,10 @@ function _init()
 	score = 0
 	timer = 0
 	shake_timer = 0
-	shake_amount_coeff = 0.5
+	shake_amount_coeff = 0.4
 	shake_duration_coeff = 0.4
-	max_shake_amount = 8
-	max_shake_duration = 12
+	max_shake_amount = 4
+	max_shake_duration = 8
 	last_pressed = {
 		left = -500,
 		right = -500,
@@ -23,15 +23,15 @@ function _init()
 	player = make_actor(17, 32, 32)
 	player.w = 3
 	player.h = 3
-	player.accel = 0.3
-	player.force = 1.6
-	player.weight = 1
+	player.accel = 0.18
+	player.force = 1.5
+	player.weight = 2
 	player.friction = 0.975
 	player.team = 0
-	player.hp = 10
-	player.hp_max = 10
+	player.hp = 5
+	player.hp_max = 5
 	player.force_threshold = 0.35
-	player.damage = 10
+	player.damage = 3
 	player.hard_mode = 0
 	player.type = "player"
 	-- Define the available powerups
@@ -80,8 +80,8 @@ function _init()
 		}
 		,
 		{
-			name = "Harder",
-			desc = "surprise!!",
+			name = "more",
+			desc = "one more boss",
 			apply = function(p) 
 				p.hard_mode = p.hard_mode+1
 			end,
@@ -91,8 +91,8 @@ function _init()
 		}
 		,
 		{
-			name = "Fat",
-			desc = "More mass",
+			name = "heavy",
+			desc = "more mass",
 			apply = function(p) 
 				p.weight = p.weight+1
 			end,
@@ -107,8 +107,10 @@ function _init()
 
 	player.force_threshold = 0.5
 
-	a = straight_boss.new(100, 100)
+	local a = straight_boss.new(100, 100)
 	a:create_minions(400)
+	local b = follower_boss.new(60,60)
+
 end
 
 function _update60()

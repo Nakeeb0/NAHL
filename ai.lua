@@ -72,7 +72,7 @@ function follower_boss.new(x, y)
 	local a = base_ai.new(x, y)
 	setmetatable(a, follower_boss)
 	a.type = "follower-boss"
-	a.frames = 4
+	a.frames = 1
 	a.damage = 2
 	a.max_velocity = 1
 	a.accel = 0.01
@@ -80,13 +80,13 @@ function follower_boss.new(x, y)
 	a.bounce = 1
 	a.weight = 4
 	a.hp_max = 7
-	a.force_threshold = 2.3
+	a.force_threshold = 1.8
 	a.hp = 7
 	a.w = 7
 	a.h = 7
 	a.velocity_cutoff = 0.1
 	a.force = 2.5
-	a.index = 33
+	a.index = 65
 	return a
 end
 
