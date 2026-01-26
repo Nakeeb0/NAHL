@@ -37,7 +37,7 @@ function _init()
 	-- Define the available powerups
 	all_powerups = {
 		{
-			name = "Repair",
+			name = "repair",
 			desc = "Heal 1 HP",
 			apply = function(p) 
 				p.hp = min(p.hp + 1, p.hp_max)
@@ -47,7 +47,7 @@ function _init()
 			end
 		},
 		{
-			name = "Sharpen",
+			name = "sharpen",
 			desc = "Damage +1",
 			apply = function(p) 
 				p.damage += 1 
@@ -59,9 +59,8 @@ function _init()
 		},
 		{ 
 			--todo: revise the limit
-			
-			name = "Turbo",
-			desc = "acceleration +25%",
+			name = "turbo",
+			desc = "acceleration +10%",
 			apply = function(p) 
 				p.accel = min(p.accel*1.25,0.45) 
 			end,
@@ -70,7 +69,7 @@ function _init()
 			end
 		},
 		{
-			name = "Sturdy",
+			name = "sturdy",
 			desc = "Max HP +1",
 			apply = function(p) 
 				p.hp_max += 1 
