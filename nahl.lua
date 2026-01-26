@@ -1,6 +1,6 @@
 function _init()
 	_dr = normal_draw
-	_upd = infinite_straight_laced
+	_upd = infinite_dasher
 	score = 0
 	timer = 0
 	shake_timer = 0
@@ -23,7 +23,7 @@ function _init()
 	player = make_actor(17, 32, 32)
 	player.w = 3
 	player.h = 3
-	player.accel = 0.18
+	player.accel = 0.1
 	player.force = 1.5
 	player.weight = 2
 	player.friction = 0.975
@@ -31,7 +31,7 @@ function _init()
 	player.hp = 5
 	player.hp_max = 5
 	player.force_threshold = 0.35
-	player.damage = 3
+	player.damage = 1
 	player.hard_mode = 0
 	player.type = "player"
 	level_up_options = {}
@@ -39,15 +39,16 @@ function _init()
 
 	player.force_threshold = 0.5
 
+	local dash = dasher_ai.new(100, 100)
+	dash:dash_in(150)
 	-- local a = straight_boss.new(100, 100)
 	-- a:create_minions(400)
 	-- local b = follower_boss.new(60,60)
-
 end
 
 function _update60()
 	timer += 1
-	
+
 	_upd()
 	run_update_coroutines()
 end

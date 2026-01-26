@@ -25,10 +25,10 @@ function normal_draw()
 	-- rng(10,20)
 	shake_x = 0
 	shake_y = 0
-	if shake_timer>0 then 
-		shake_x = rng(-shake_factor,shake_factor)
-		shake_y = rng(-shake_factor,shake_factor)
-		shake_timer = shake_timer-1
+	if shake_timer > 0 then
+		shake_x = rng(-shake_factor, shake_factor)
+		shake_y = rng(-shake_factor, shake_factor)
+		shake_timer = shake_timer - 1
 	end
 	camera(room_x * 128 + 16 + shake_x, room_y * 128 + 16 + shake_y)
 
@@ -39,50 +39,50 @@ function normal_draw()
 end
 
 function start_level_up()
-    -- 1. Pick 3 random UNIQUE powerups
+	-- 1. Pick 3 random UNIQUE powerups
 	player.power_ups += 1
-    level_up_options = {}
-    local choices = {}
-    for i = 1, #all_powerups do
+	level_up_options = {}
+	local choices = {}
+	for i = 1, #all_powerups do
 		if all_powerups[i].is_eligible(player) then
-        	add(choices, all_powerups[i])
+			add(choices, all_powerups[i])
 		end
-    end
+	end
 
-    for i = 1, min(3,#choices) do
-        if #choices > 0 then
-            local idx = flr(rnd(#choices)) + 1
-            add(level_up_options, choices[idx])
-            deli(choices, idx)
-        end
-    end
+	for i = 1, min(3, #choices) do
+		if #choices > 0 then
+			local idx = flr(rnd(#choices)) + 1
+			add(level_up_options, choices[idx])
+			deli(choices, idx)
+		end
+	end
 
-    -- 2. Reset selection
-    selected_option = 1
+	-- 2. Reset selection
+	selected_option = 1
 
-    -- 3. Switch Game State (Pause the game)
+	-- 3. Switch Game State (Pause the game)
 	paused = true
-    _upd = level_up_update
-    _dr = level_up_draw
+	_upd = level_up_update
+	_dr = level_up_draw
 end
 
 function level_up_update()
-    -- Left / Right to select
-    if btnp(0) then
-        selected_option = max(1, selected_option - 1)
-    end
-    if btnp(1) then
-        selected_option = min(#level_up_options, selected_option + 1)
-    end
+	-- Left / Right to select
+	if btnp(0) then
+		selected_option = max(1, selected_option - 1)
+	end
+	if btnp(1) then
+		selected_option = min(#level_up_options, selected_option + 1)
+	end
 
-    -- Z or X to confirm
-    if btnp(4) or btnp(5) then
-        -- Apply the powerup
-        level_up_options[selected_option].apply(player)
-        -- Resume Game
+	-- Z or X to confirm
+	if btnp(4) or btnp(5) then
+		-- Apply the powerup
+		level_up_options[selected_option].apply(player)
+		-- Resume Game
 		if score > 0 and flr(score / 15) > player.power_ups then
 			start_level_up()
-		else 
+		else
 			set_invulnerable(player, 60)
 			paused = false
 			_upd = infinite_straight_laced
@@ -91,8 +91,31 @@ function level_up_update()
 	end
 end
 
-
+function infinite_dasher()
+	player_input()
+	ai_update()
+	check_all_actor_collision()
+	for act in all(actor) do
+		move_actor(act)
+	end
+	if #enemies < 2 then
+		local a = dasher_ai.new(64, 64)
+		a:dash_in(100)
+	end
+end
 function infinite_straight_laced()
+	player_input()
+	ai_update()
+	check_all_actor_collision()
+	for act in all(actor) do
+		move_actor(act)
+	end
+	if #enemies < 2 then
+		local a = straight_ai.new(64, 64)
+	end
+end
+
+function bang()
 	player_input()
 	ai_update()
 	check_all_actor_collision()
@@ -103,27 +126,28 @@ function infinite_straight_laced()
 		local x = 128
 		local y = 128
 		while true do
-			x = rng(32,128)
-			y = rng(32,128)
-			local v = vec2d.new(x,y)
-			local dist = (v-player.pos):magnitude()
-			printh('dist: '..dist..' x= '..x..' y='..y..' px='..player.pos.x..' py= '..player.pos.y,"debug.txt")
-			if (v-player.pos):magnitude()>64 then
+			x = rng(32, 128)
+			y = rng(32, 128)
+			local v = vec2d.new(x, y)
+			local dist = (v - player.pos):magnitude()
+			printh(
+				"dist: " .. dist .. " x= " .. x .. " y=" .. y .. " px=" .. player.pos.x .. " py= " .. player.pos.y,
+				"debug.txt"
+			)
+			if (v - player.pos):magnitude() > 64 then
 				break
 			end
 		end
-		return x,y
+		return x, y
 	end
 	if #enemies <= player.hard_mode then
-		local x,y = roll_xy()
+		local x, y = roll_xy()
 		local a = straight_boss.new(x, y)
 		a:create_minions(400)
-		x,y = roll_xy()
-		local b = follower_boss.new(x,y)
-		x,y = roll_xy()
-		local c = dasher_ai.new(x,y)
+		x, y = roll_xy()
+		local b = follower_boss.new(x, y)
+		x, y = roll_xy()
+		local c = dasher_ai.new(x, y)
 		c:dash(100)
-		
-		
 	end
 end

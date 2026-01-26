@@ -65,7 +65,6 @@ function straight_boss:create_minions(time)
 	end)
 end
 
-
 follower_boss = setmetatable({}, base_ai)
 follower_boss.__index = follower_boss
 
@@ -98,26 +97,38 @@ function dasher_ai.new(x, y)
 	local a = base_ai.new(x, y)
 	setmetatable(a, dasher_ai)
 	a.type = "dasher"
-	a.frames = 3
-	a.max_velocity = 3
-	a.accel = 12
-	a.friction = 0.97
+	a.accel = 3.5
+	a.friction = 0.95
 	a.bounce = 1
 	a.weight = 2
 	a.hp_max = 3
 	a.hp = 3
 	a.index = 67
+	a.state = "neutral"
 	return a
 end
 
-function dasher_ai:dash(time)
+function dasher_ai:dash_in(time)
 	local t = 0
 	add_update_coroutine(function()
 		while self.dead == false do
+			if t == time / 2 then
+				self.state = "charged"
+			end
 			if t == time then
+				self.state = "dashing"
 				local dir = (player.pos - self.pos):normalize()
 				self.vel = dir * self.accel
-				t = -1
+				local tt = 0
+				add_update_coroutine(function()
+					while tt < 30 do
+						self.vel = dir * self.accel
+						tt = tt + 1
+						yield()
+					end
+					self.vel = dir * 0
+				end)
+				return
 			end
 			t += 1
 			yield()
@@ -133,10 +144,14 @@ function ai_update()
 				dir = vec2d.new(rnd(2) - 1, rnd(2) - 1)
 			end
 			enemy.vel += dir * enemy.accel
-
 		elseif enemy.type == "follower-boss" then
-			local dir = player.pos-enemy.pos	
+			local dir = player.pos - enemy.pos
 			enemy.vel += dir * enemy.accel
+		elseif enemy.type == "dasher" then
+			if enemy.state == "dashing" and enemy.vel:magnitude() == 0 then
+				enemy.state = "neutral"
+				enemy:dash_in(150)
+			end
 		end
 	end
 end

@@ -73,6 +73,15 @@ function draw_actor(act)
 	if act.vel:magnitude() < act.velocity_cutoff then
 		act.frame = 0
 	end
+	if act.type == "dasher" then
+		if act.state == "dashing" then
+			act.frame = 2
+		elseif act.state == "neutral" then
+			act.frame = 0
+		else
+			act.frame = 1
+		end
+	end
 
 	local tile_height = flr((act.h * 2 + 7) / 8)
 	local tile_width = flr((act.w * 2 + 7) / 8)
@@ -101,32 +110,32 @@ function draw_dash_cooldown(x1, y1, x2, y2, color)
 end
 
 function level_up_draw()
-    -- Draw the game behind the menu 
-    normal_draw()
+	-- Draw the game behind the menu
+	normal_draw()
 
-    -- Draw a dark box for the menu
-    rectfill(24, 40, 135, 90, 0)
-    rect(24, 40, 135, 90, 7)
+	-- Draw a dark box for the menu
+	rectfill(24, 40, 135, 90, 0)
+	rect(24, 40, 135, 90, 7)
 
-    print("POWER UP! CHOOSE ONE:", 30, 45, 7)
+	print("POWER UP! CHOOSE ONE:", 30, 45, 7)
 
-    -- Draw the 3 options
-    local start_x = 31
-    for i = 1, #level_up_options do
-        local opt = level_up_options[i]
-        local col = 6 -- Grey default
+	-- Draw the 3 options
+	local start_x = 31
+	for i = 1, #level_up_options do
+		local opt = level_up_options[i]
+		local col = 6 -- Grey default
 
-        -- Highlight selected option
-        if i == selected_option then
-            col = 11 -- Green for selected
-            -- TODO : handle the different text lengths better
-            print(">", start_x + (i - 1) * 34 - 4, 60, 11)
+		-- Highlight selected option
+		if i == selected_option then
+			col = 11 -- Green for selected
+			-- TODO : handle the different text lengths better
+			print(">", start_x + (i - 1) * 34 - 4, 60, 11)
 
-            -- Draw Description for selected item at the bottom
-            print(opt.desc, start_x, 80, 7)
-        end
+			-- Draw Description for selected item at the bottom
+			print(opt.desc, start_x, 80, 7)
+		end
 
-        -- Draw Option Name
-        print(opt.name, start_x + (i - 1) * 34, 60, col)
-    end
+		-- Draw Option Name
+		print(opt.name, start_x + (i - 1) * 34, 60, col)
+	end
 end
