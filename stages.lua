@@ -83,6 +83,7 @@ function level_up_update()
 		if score > 0 and flr(score / 5) > player.power_ups then
 			start_level_up()
 		else 
+			set_invulnerable(player, 60)
 			paused = false
 			_upd = infinite_straight_laced
 			_dr = normal_draw
