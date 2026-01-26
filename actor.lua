@@ -127,6 +127,7 @@ function resolve_damage(a, b, mag_a, mag_b)
 	end
 
 	damaged.hp -= damager.damage
+	set_invulnerable(damager, damager.invul_frames)
 	set_invulnerable(damaged, damaged.invul_frames)
 
 	if damaged == player then
