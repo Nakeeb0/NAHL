@@ -17,12 +17,10 @@ end
 
 function normal_draw()
 	cls()
-	draw_health_bar(20, 139, 80, 142, 8)
-	draw_dash_cooldown(94, 139, 140, 142, 7)
+	-- print(#enemies, 50+arenax, 50+arenay, 7)
+	draw_health_bar(arenax+4, arenay+123, arenax+ 64, arenay+126, 8)
+	draw_dash_cooldown(arenax+78, arenay + 123, arenax + 124, arenay + 126, 7)
 	draw_death_fx()
-	room_x = flr((player.pos.x - 16) / 128)
-	room_y = flr((player.pos.y - 16) / 128)
-	-- rng(10,20)
 	shake_x = 0
 	shake_y = 0
 	if shake_timer > 0 then
@@ -30,7 +28,7 @@ function normal_draw()
 		shake_y = rng(-shake_factor, shake_factor)
 		shake_timer = shake_timer - 1
 	end
-	camera(room_x * 128 + 16 + shake_x, room_y * 128 + 16 + shake_y)
+	camera(arenax + shake_x, arenay + shake_y)
 
 	map()
 	for act in all(actor) do
@@ -99,7 +97,7 @@ function infinite_dasher()
 		move_actor(act)
 	end
 	if #enemies < 2 then
-		local a = dasher_ai.new(64, 64)
+		local a = dasher_ai.new(roll_xy())
 		a:dash_in(100)
 	end
 end
@@ -115,6 +113,25 @@ function infinite_straight_laced()
 	end
 end
 
+function roll_xy()
+		local x = 112
+		local y = 112
+		while true do
+			x = rng(32, 112)
+			y = rng(32, 112)
+			local v = vec2d.new(x+arenax, y+arenay)
+			local dist = (v - player.pos):magnitude()
+			printh(
+				"dist: " .. dist .. " x= " .. x .. " y=" .. y .. " px=" .. player.pos.x .. " py= " .. player.pos.y,
+				"debug.txt"
+			)
+			if (v - player.pos):magnitude() > 49 then
+				break
+			end
+		end
+		return x, y
+	end
+
 function bang()
 	player_input()
 	ai_update()
@@ -122,32 +139,14 @@ function bang()
 	for act in all(actor) do
 		move_actor(act)
 	end
-	function roll_xy()
-		local x = 128
-		local y = 128
-		while true do
-			x = rng(32, 128)
-			y = rng(32, 128)
-			local v = vec2d.new(x, y)
-			local dist = (v - player.pos):magnitude()
-			printh(
-				"dist: " .. dist .. " x= " .. x .. " y=" .. y .. " px=" .. player.pos.x .. " py= " .. player.pos.y,
-				"debug.txt"
-			)
-			if (v - player.pos):magnitude() > 64 then
-				break
-			end
-		end
-		return x, y
-	end
 	if #enemies <= player.hard_mode then
-		local x, y = roll_xy()
-		local a = straight_boss.new(x, y)
-		a:create_minions(400)
-		x, y = roll_xy()
-		local b = follower_boss.new(x, y)
-		x, y = roll_xy()
-		local c = dasher_ai.new(x, y)
-		c:dash(100)
+		-- local x, y = roll_xy()
+		-- local a = straight_boss.new(x, y)
+		-- a:create_minions(400)
+		-- x, y = roll_xy()
+		-- local b = follower_boss.new(x, y)
+		-- x, y = roll_xy()
+		-- local c = dasher_ai.new(x, y)
+		-- c:dash(100)
 	end
 end

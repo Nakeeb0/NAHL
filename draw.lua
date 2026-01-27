@@ -114,13 +114,13 @@ function level_up_draw()
 	normal_draw()
 
 	-- Draw a dark box for the menu
-	rectfill(24, 40, 135, 90, 0)
-	rect(24, 40, 135, 90, 7)
+	rectfill(8+arenax, 24 +arenay, 119 + arenax, 74 + arenay, 0)
+	rect(8+arenax, 24 +arenay, 119 + arenax, 74 + arenay, 7)
 
-	print("POWER UP! CHOOSE ONE:", 30, 45, 7)
+	print("POWER UP! CHOOSE ONE:", 14+arenax, 29+arenay, 7)
 
 	-- Draw the 3 options
-	local start_x = 31
+	local start_x = 15+arenax
 	for i = 1, #level_up_options do
 		local opt = level_up_options[i]
 		local col = 6 -- Grey default
@@ -129,13 +129,13 @@ function level_up_draw()
 		if i == selected_option then
 			col = 11 -- Green for selected
 			-- TODO : handle the different text lengths better
-			print(">", start_x + (i - 1) * 34 - 4, 60, 11)
+			print(">", start_x + (i - 1) * 34 - 4, 44 +arenay, 11)
 
 			-- Draw Description for selected item at the bottom
-			print(opt.desc, start_x, 80, 7)
+			print(opt.desc, start_x, 64 + arenay, 7)
 		end
 
 		-- Draw Option Name
-		print(opt.name, start_x + (i - 1) * 34, 60, col)
+		print(opt.name, start_x + (i - 1) * 34, 44 + arenay, col)
 	end
 end

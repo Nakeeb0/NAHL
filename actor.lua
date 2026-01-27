@@ -7,7 +7,7 @@ end
 function make_actor(index, x, y)
 	local a = {
 		index = index,
-		pos = vec2d.new(x, y),
+		pos = vec2d.new(x+arenax, y+arenay),
 		vel = vec2d.new(0, 0),
 		id = next_actor_id,
 		next_actor_id = next_actor_id + 1,

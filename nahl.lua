@@ -1,6 +1,9 @@
 function _init()
 	_dr = normal_draw
 	_upd = infinite_dasher
+	curr_arena = "default"
+	arenax = arenas[curr_arena].x * 8
+	arenay = arenas[curr_arena].y * 8
 	score = 0
 	timer = 0
 	shake_timer = 0
@@ -20,7 +23,7 @@ function _init()
 	asdf = 5
 
 	enemies = {}
-	player = make_actor(17, 32, 32)
+	player = make_actor(17, 32+arenax, 32+arenay)
 	player.w = 3
 	player.h = 3
 	player.accel = 0.1
@@ -37,6 +40,7 @@ function _init()
 	level_up_options = {}
 	selected_option = 1
 
+    score = 5
 	player.force_threshold = 0.5
 
 	local dash = dasher_ai.new(100, 100)
