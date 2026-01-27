@@ -46,9 +46,6 @@ function player_input()
 			sfx(2)
 		end
 	end
-	if btn(5) then
-		load_arena("blackhole")
-	end
 
 	if input_vec:magnitude() == 0 and last_input == true then
 		trail_running_for = player.vel:magnitude() * 20
