@@ -1,7 +1,8 @@
 function _init()
 	_dr = normal_draw
 	_upd = arena_update
-	curr_arena = arena_names[flr(rnd(#arena_names) + 1)]
+	difficulty = 0
+	curr_arena = rnd(arena_names)
 	arenax = arenas[curr_arena].x * 8
 	arenay = arenas[curr_arena].y * 8
 	score = 0
@@ -20,7 +21,6 @@ function _init()
 		special2 = -500,
 	}
 	last_nothing = -600
-	asdf = 5
 
 	enemies = {}
 	actor = {}
@@ -36,15 +36,11 @@ function _init()
 	player.hp_max = 5
 	player.force_threshold = 0.35
 	player.damage = 1
-	player.hard_mode = 0
 	player.type = "player"
 	level_up_options = {}
 	selected_option = 1
 	player.force_threshold = 0.5
 	load_arena(curr_arena)
-	-- local a = straight_boss.new(100, 100)
-	-- a:create_minions(400)
-	-- local b = follower_boss.new(60,60)
 end
 
 function _update60()

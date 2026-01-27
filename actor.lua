@@ -220,7 +220,7 @@ function check_death()
 			else
 				score += 1
 			end
-			if score > 0 and flr(score / 5) > player.power_ups then
+			if score > 0 and flr(score / 2) > player.power_ups then
 				start_level_up()
 			end
 			del(actor, act)

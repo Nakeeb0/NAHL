@@ -1,6 +1,9 @@
 function blackhole_update()
 	for act in all(actor) do
-		act.vel += (vec2d.new(64 + arenax - act.pos.x, 64 + arenay - act.pos.y):normalize() * 0.03) -- black hole effect
+        if not(flr(act.pos.x /8) <= 24 and flr(act.pos.x/8) >= 23 
+        and flr(act.pos.y/8) >= 7 and flr(act.pos.y/8) <= 8) then
+		    act.vel += (vec2d.new(64 + arenax - act.pos.x, 64 + arenay - act.pos.y):normalize() * 0.035) -- black hole effect
+        end
 	end
     if timer % 600 == 0 then
 		rnd(arenas[curr_arena].possible_enemy_spawn)(roll_xy())

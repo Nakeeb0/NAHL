@@ -15,13 +15,13 @@ function straight_ai.new(x, y)
 	setmetatable(a, straight_ai)
 	a.type = "straight-laced"
 	a.frames = 4
-	a.max_velocity = 0.8 + rnd(0.6)
-	a.accel = 0.01
+	a.max_velocity = 0.8 + rnd(0.4) + min(difficulty * 0.1, 0.4) 
+	a.accel = 0.01 
 	a.friction = 1
 	a.bounce = 1
 	a.weight = 2
 	a.hp_max = 3
-	a.hp = 3
+	a.hp = 3 + difficulty
 	return a
 end
 
@@ -100,13 +100,14 @@ function dasher_ai.new(x, y)
 	a.max_velocity = 100
 	a.accel = 3.5 
 	a.friction = 0.94
+	a.force = 1.5
 	a.bounce = 1
 	a.weight = 2
 	a.hp_max = 3
-	a.hp = 3
+	a.hp = 3 + difficulty
 	a.index = 67
 	a.state = "neutral"
-	a.dash_time = 110 + flr(rnd(100))
+	a.dash_time = 110 + flr(rnd(100)) - min(difficulty * 10, 30)
 	a:dash_in(a.dash_time)
 	return a
 end

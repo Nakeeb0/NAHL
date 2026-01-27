@@ -12,9 +12,9 @@ all_powerups = {
     },
     {
         name = "sharpen",
-        desc = "Damage +1",
+        desc = "Damage +0.4",
         apply = function(p) 
-            p.damage += 1 
+            p.damage += 0.4
         end,
         is_eligible = function(p)
             return true
@@ -29,7 +29,8 @@ all_powerups = {
             p.accel = min(p.accel*1.1,0.45) 
         end,
         is_eligible = function(p)
-            return p.accel < 0.45
+            return false
+            -- return p.accel < 0.45
         end
     },
     {
@@ -47,7 +48,7 @@ all_powerups = {
         name = "harder",
         desc = "surprise!!",
         apply = function(p) 
-            p.hard_mode = p.hard_mode+1
+            difficulty += 1
         end,
         is_eligible = function(p)
             return true
@@ -61,7 +62,19 @@ all_powerups = {
             p.weight = p.weight+1
         end,
         is_eligible = function(p)
-            return true
+            return false
+        end
+    }
+    ,
+    {
+        name = "bounce",
+        desc = "energy conserving",
+        apply = function(p) 
+            p.bounce += 0.3 
+        end,
+        is_eligible = function(p)
+            if p.bounce > 0.9 then return false 
+            else return true end
         end
     }
 }

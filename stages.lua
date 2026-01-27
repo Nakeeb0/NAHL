@@ -1,9 +1,9 @@
 function game_over()
 	_dr = function()
 		normal_draw()
-	    print("score: " .. score, 64, 64, 6)
+	    print("score: " .. score, arenax + 50, arenay + 50, 6)
 	end
-	local time = 50
+	local time = 70
 	add_update_coroutine(function()
 		while time > 0 do
 			time -= 1
