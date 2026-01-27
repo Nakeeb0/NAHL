@@ -1,7 +1,7 @@
 function _init()
 	_dr = normal_draw
 	_upd = arena_update
-	curr_arena = "default"
+	curr_arena = arena_names[flr(rnd(#arena_names) + 1)]
 	arenax = arenas[curr_arena].x * 8
 	arenay = arenas[curr_arena].y * 8
 	score = 0
