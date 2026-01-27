@@ -23,6 +23,7 @@ function _init()
 	asdf = 5
 
 	enemies = {}
+	actor = {}
 	player = make_actor(17, 32+arenax, 32+arenay)
 	player.w = 3
 	player.h = 3

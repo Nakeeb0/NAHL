@@ -1,8 +1,11 @@
 function blackhole_update()
-	if #enemies < 2 then
-		local a = dasher_ai.new(roll_xy())
-		a:dash_in(100)
-	end
+    for act in all(actor) do
+        act.vel += (vec2d.new(64+arenax-act.pos.x, 64+arenay-act.pos.y):normalize()*0.05) -- black hole effect
+    end
+    if #enemies < 2 then
+        local a = dasher_ai.new(roll_xy())
+        a:dash_in(100)
+    end
 end
 
 function default_update()
@@ -31,8 +34,8 @@ arenas = {
         update = default_update,
     },
     ["blackhole"] = {
-        x = 44,
-        y = 48,
+        x = 16,
+        y = 0,
         update = blackhole_update,
     },
 }
@@ -45,8 +48,8 @@ function load_arena(name)
     player.pos.y = 32 + arenay
     for ai in all(enemies) do
         del(actor, ai)
-		del(enemies, ai)
     end
+    enemies = {}
     
 end
 

@@ -1,4 +1,3 @@
-actor = {}
 next_actor_id = 1
 function rng(l, r)
 	return rnd(r - l + 1) + l
@@ -188,7 +187,6 @@ function resolve_collide(a, b)
 	resolve_damage(a, b, mag_a, mag_b)
 end
 function move_actor(a)
-	--a.vel += (vec2d.new(80-a.pos.x, 80-a.pos.y):normalize()*0.05) -- experimenting with a "black hole" at the center
 	if a.vel:magnitude() > a.max_velocity then
 		a.vel = a.vel:normalize() * a.max_velocity
 	end
