@@ -209,6 +209,7 @@ function check_death()
 	for act in all(actor) do
 		if act.dead == true then
 			if act == player then
+			    del(actor, act)
 				game_over()
 				return
 			end

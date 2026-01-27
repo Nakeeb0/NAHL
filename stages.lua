@@ -1,18 +1,16 @@
-function game_over_screen()
-	map()
-	print("score: " .. score, 64, 64, 6)
-end
-
-function game_over_update()
-	if timer > 50 then
-		run()
-	end
-end
-
 function game_over()
-	_dr = game_over_screen
-	_upd = game_over_update
-	timer = 1
+	_dr = function()
+		normal_draw()
+	    print("score: " .. score, 64, 64, 6)
+	end
+	local time = 50
+	add_update_coroutine(function()
+		while time > 0 do
+			time -= 1
+			yield()
+		end
+		run()
+	end)
 end
 
 function normal_draw()
@@ -95,10 +93,10 @@ function arena_update()
 	check_all_actor_collision()
 	for act in all(actor) do
 		move_actor(act)
-		-- act.vel += (vec2d.new(64+arenax-act.pos.x, 64+arenay-act.pos.y):normalize()*0.05) -- black hole effect
 	end
 	arenas[curr_arena].update()
 end
+
 function roll_xy()
 		local x = 112
 		local y = 112
