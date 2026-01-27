@@ -34,6 +34,7 @@ function bang_update()
 	end
 end
 
+
 --all arena update functions must be defined before the arenas table
 arenas = {
 	["default"] = {
