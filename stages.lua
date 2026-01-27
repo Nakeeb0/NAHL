@@ -17,7 +17,7 @@ end
 
 function normal_draw()
 	cls()
-	-- print(#enemies, 50+arenax, 50+arenay, 7)
+	-- print(arenas[curr_arena].update, 50+arenax, 50+arenay, 7)
 	draw_health_bar(arenax+4, arenay+123, arenax+ 64, arenay+126, 8)
 	draw_dash_cooldown(arenax+78, arenay + 123, arenax + 124, arenay + 126, 7)
 	draw_death_fx()
@@ -83,36 +83,21 @@ function level_up_update()
 		else
 			set_invulnerable(player, 60)
 			paused = false
-			_upd = infinite_straight_laced
+			_upd = arena_update
 			_dr = normal_draw
 		end
 	end
 end
 
-function infinite_dasher()
+function arena_update()
 	player_input()
 	ai_update()
 	check_all_actor_collision()
 	for act in all(actor) do
 		move_actor(act)
 	end
-	if #enemies < 2 then
-		local a = dasher_ai.new(roll_xy())
-		a:dash_in(100)
-	end
+	arenas[curr_arena].update()
 end
-function infinite_straight_laced()
-	player_input()
-	ai_update()
-	check_all_actor_collision()
-	for act in all(actor) do
-		move_actor(act)
-	end
-	if #enemies < 2 then
-		local a = straight_ai.new(64, 64)
-	end
-end
-
 function roll_xy()
 		local x = 112
 		local y = 112
@@ -121,10 +106,6 @@ function roll_xy()
 			y = rng(32, 112)
 			local v = vec2d.new(x+arenax, y+arenay)
 			local dist = (v - player.pos):magnitude()
-			printh(
-				"dist: " .. dist .. " x= " .. x .. " y=" .. y .. " px=" .. player.pos.x .. " py= " .. player.pos.y,
-				"debug.txt"
-			)
 			if (v - player.pos):magnitude() > 49 then
 				break
 			end
@@ -132,21 +113,4 @@ function roll_xy()
 		return x, y
 	end
 
-function bang()
-	player_input()
-	ai_update()
-	check_all_actor_collision()
-	for act in all(actor) do
-		move_actor(act)
-	end
-	if #enemies <= player.hard_mode then
-		-- local x, y = roll_xy()
-		-- local a = straight_boss.new(x, y)
-		-- a:create_minions(400)
-		-- x, y = roll_xy()
-		-- local b = follower_boss.new(x, y)
-		-- x, y = roll_xy()
-		-- local c = dasher_ai.new(x, y)
-		-- c:dash(100)
-	end
-end
+

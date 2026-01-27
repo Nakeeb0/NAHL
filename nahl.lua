@@ -1,6 +1,6 @@
 function _init()
 	_dr = normal_draw
-	_upd = infinite_dasher
+	_upd = arena_update
 	curr_arena = "default"
 	arenax = arenas[curr_arena].x * 8
 	arenay = arenas[curr_arena].y * 8
@@ -39,12 +39,8 @@ function _init()
 	player.type = "player"
 	level_up_options = {}
 	selected_option = 1
-
-    score = 5
 	player.force_threshold = 0.5
-
-	local dash = dasher_ai.new(100, 100)
-	dash:dash_in(150)
+	load_arena(curr_arena)
 	-- local a = straight_boss.new(100, 100)
 	-- a:create_minions(400)
 	-- local b = follower_boss.new(60,60)
