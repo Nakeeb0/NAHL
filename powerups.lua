@@ -89,7 +89,7 @@ all_powerups = {
         end
     },
     {
-        name = "dash speed",
+        name = "dash spd",
         desc = "faster dashes",
         apply = function(p) 
             p.dash_speed += 0.2
