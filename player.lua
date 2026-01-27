@@ -1,5 +1,40 @@
 trail_running_for = 0
 last_input = false
+
+pc = {}
+pc.__index = pc 
+
+function pc:dash(input_vec)
+	if timer - last_pressed.special1 >= self.dash_cooldown and self.vel:magnitude() > 0 then
+		last_pressed.special1 = timer
+		self.vel = input_vec:normalize() * self.dash_speed * self.vel:magnitude()
+		sfx(2)
+	end
+end
+
+function pc.new(index, x, y)
+	player = make_actor(index, x, y)
+	setmetatable(player, pc)
+	player.w = 3
+	player.dash_speed = 2
+	player.dash_cooldown = 120
+	player.power_ups = 0
+	player.h = 3
+	player.accel = 0.1
+	player.force = 1.5
+	player.weight = 2
+	player.friction = 0.975
+	player.team = 0
+	player.hp = 5
+	player.hp_max = 5
+	player.force_threshold = 0.5
+	player.damage = 1
+	player.type = "player"
+	player.ability1 = pc.dash
+	return player
+end
+
+
 function player_input()
 	local x = 0
 	local y = 0
@@ -39,12 +74,8 @@ function player_input()
 	local input_vec = vec2d.new(x, y)
 	local input_acc = input_vec:normalize() * player.accel
 	player.vel += input_acc
-	if btn(4) and input_vec:magnitude() > 0 then
-		if timer - last_pressed.special1 >= player.dash_cooldown then
-			last_pressed.special1 = timer
-			player.vel = input_vec:normalize() * player.dash_speed * player.vel:magnitude()
-			sfx(2)
-		end
+	if btn(4) then
+		player:dash(input_vec)
 	end
 
 	if input_vec:magnitude() == 0 and last_input == true then
