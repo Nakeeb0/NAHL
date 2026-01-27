@@ -3,9 +3,9 @@ function solid_tile(tx, ty)
 end
 
 function solid_aabb(a, check_x, check_y)
-	local l = check_x - a.w + 1
+	local l = check_x - a.w 
 	local r = check_x + a.w
-	local t = check_y - a.h + 1
+	local t = check_y - a.h 
 	local b = check_y + a.h
 
 	local tx0 = flr(l / 8)

@@ -13,6 +13,7 @@ function game_over()
 	end)
 end
 
+
 function normal_draw()
 	cls()
 	--print(#actor, 50+arenax, 50+arenay, 7)
@@ -31,6 +32,9 @@ function normal_draw()
 	map()
 	for act in all(actor) do
 		draw_actor(act)
+	end
+	for proj in all(projectiles) do
+		spr(proj.index, proj.pos.x, proj.pos.y,proj.w, proj.h)
 	end
 end
 
@@ -91,8 +95,12 @@ function arena_update()
 	player_input()
 	ai_update()
 	check_all_actor_collision()
+	check_all_projectile_collisions()
 	for act in all(actor) do
 		move_actor(act)
+	end
+	for proj in all(projectiles) do
+		move_proj(proj)
 	end
 	arenas[curr_arena].update()
 end

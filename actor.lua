@@ -19,7 +19,6 @@ function make_actor(index, x, y)
 		frames = 6,
 		velocity_cutoff = 0.25,
 		max_velocity = 999,
-		dash_speed = 2,
 		hp = 10,
 		hp_max = 10,
 		damage = 1,
@@ -29,14 +28,10 @@ function make_actor(index, x, y)
 		team = 1,
 		invul_frames = 30,
 		force_threshold = 1.5,
-		dash_cooldown = 120,	
-		type = "player",
 		dead = false,
 		ghosted = false,
 		frozen = false,
 		invulnerable = false,
-		power_ups = 0,
-		hard_mode = 0,
 	}
 	add(actor, a)
 	return a
@@ -113,7 +108,7 @@ function resolve_damage(a, b, mag_a, mag_b)
 		mag_damager, mag_damaged = mag_damaged, mag_damager
 	end
 
-	if not can_damage_pair(damager, damaged) then
+	if not a.type == "projectile" and not can_damage_pair(damager, damaged) then
 		return
 	end
 	if
@@ -127,7 +122,7 @@ function resolve_damage(a, b, mag_a, mag_b)
 	end
 
 	damaged.hp -= damager.damage
-	set_invulnerable(damager, damager.invul_frames)
+
 	set_invulnerable(damaged, damaged.invul_frames)
 
 	if damaged == player then

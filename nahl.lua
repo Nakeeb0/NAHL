@@ -33,7 +33,11 @@ end
 
 function _update60()
 	timer += 1
-
+	if timer %  60 == 0 then
+		local vec = vec2d.new(1, 1)
+		local x,y = roll_xy()
+		--make_projectile(83, x, y,vec, 0, 1, 150) 
+	end
 	_upd()
 	run_update_coroutines()
 end
