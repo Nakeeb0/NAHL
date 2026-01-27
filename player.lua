@@ -8,6 +8,7 @@ function pc:dash(input_vec)
 	if timer - last_pressed.special1 >= self.dash_cooldown and self.vel:magnitude() > 0 then
 		last_pressed.special1 = timer
 		self.vel = input_vec:normalize() * self.dash_speed * self.vel:magnitude()
+		player.dash_sprite_frames = min(35,(player.vel:magnitude()+1)^2 + 10)
 		sfx(2)
 	end
 end
@@ -31,6 +32,7 @@ function pc.new(index, x, y)
 	player.damage = 1
 	player.type = "player"
 	player.ability1 = pc.dash
+	player.dash_sprite_frames = 0
 	return player
 end
 
