@@ -1,15 +1,21 @@
 function blackhole_update()
-    for act in all(actor) do
-        act.vel += (vec2d.new(64+arenax-act.pos.x, 64+arenay-act.pos.y):normalize()*0.05) -- black hole effect
+	for act in all(actor) do
+		act.vel += (vec2d.new(64 + arenax - act.pos.x, 64 + arenay - act.pos.y):normalize() * 0.03) -- black hole effect
+	end
+    if timer % 600 == 0 then
+		rnd(arenas[curr_arena].possible_enemy_spawn)(roll_xy())
     end
-    if #enemies < 2 then
-        local a = dasher_ai.new(roll_xy())
-    end
+	if #enemies < 1 then
+		rnd(arenas[curr_arena].possible_enemy_spawn)(roll_xy())
+	end
 end
 
 function default_update()
-	if #enemies < 2 then
-		local a = straight_ai.new(roll_xy())
+    if timer % 600 == 0 then
+		rnd(arenas[curr_arena].possible_enemy_spawn)(roll_xy())
+    end
+	if #enemies < 1 then
+		rnd(arenas[curr_arena].possible_enemy_spawn)(roll_xy())
 	end
 end
 function bang_update()
@@ -27,29 +33,30 @@ end
 
 --all arena update functions must be defined before the arenas table
 arenas = {
-   ["default"] = {
-        x = 0,
-        y = 0,
-        update = default_update,
-    },
-    ["blackhole"] = {
-        x = 16,
-        y = 0,
-        update = blackhole_update,
-    },
+	["default"] = {
+		x = 0,
+		y = 0,
+		possible_enemy_spawn = { dasher_ai.new, straight_ai.new },
+		update = default_update,
+	},
+	["blackhole"] = {
+		x = 16,
+		y = 0,
+		possible_enemy_spawn = { dasher_ai.new, straight_ai.new },
+		update = blackhole_update,
+	},
 }
 
 function load_arena(name)
-    arenax = arenas[name].x * 8
-    arenay = arenas[name].y * 8
-    curr_arena = name
-    player.pos.x = 32 + arenax
-    player.pos.y = 32 + arenay
-    for ai in all(enemies) do
-        del(actor, ai)
-    end
-    enemies = {}
-    
+	arenax = arenas[name].x * 8
+	arenay = arenas[name].y * 8
+	curr_arena = name
+	player.pos.x = 32 + arenax
+	player.pos.y = 32 + arenay
+	for ai in all(enemies) do
+		del(actor, ai)
+	end
+	enemies = {}
 end
 
-arena_names = {"default", "blackhole"}
+arena_names = { "default", "blackhole" }
