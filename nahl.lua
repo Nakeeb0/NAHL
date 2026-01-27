@@ -24,22 +24,9 @@ function _init()
 
 	enemies = {}
 	actor = {}
-	player = make_actor(17, 32+arenax, 32+arenay)
-	player.w = 3
-	player.h = 3
-	player.accel = 0.1
-	player.force = 1.5
-	player.weight = 2
-	player.friction = 0.975
-	player.team = 0
-	player.hp = 5
-	player.hp_max = 5
-	player.force_threshold = 0.35
-	player.damage = 1
-	player.type = "player"
+	player = pc.new(17, 32+arenax, 32+arenay)
 	level_up_options = {}
 	selected_option = 1
-	player.force_threshold = 0.5
 	player.dash_sprite_frames=0
 	load_arena(curr_arena)
 end
