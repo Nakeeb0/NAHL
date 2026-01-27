@@ -51,7 +51,7 @@ all_powerups = {
             difficulty += 1
         end,
         is_eligible = function(p)
-            return true
+            return false
         end
     }
     ,
@@ -76,5 +76,27 @@ all_powerups = {
             if p.bounce > 0.9 then return false 
             else return true end
         end
-    }
+    },
+    {
+        name = "dash cd",
+        desc = "less dash cooldown",
+        apply = function(p) 
+            p.dash_cooldown -= 15
+        end,
+        is_eligible = function(p)
+            if p.dash_cooldown < 0.75 then return false 
+            else return true end
+        end
+    },
+    {
+        name = "dash speed",
+        desc = "faster dashes",
+        apply = function(p) 
+            p.dash_speed += 0.2
+        end,
+        is_eligible = function(p)
+            if p.dash_speed > 3.1 then return false 
+            else return true end
+        end
+    },
 }

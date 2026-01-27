@@ -40,7 +40,7 @@ function player_input()
 	local input_acc = input_vec:normalize() * player.accel
 	player.vel += input_acc
 	if btn(4) and input_vec:magnitude() > 0 then
-		if timer - last_pressed.special1 >= 100 then
+		if timer - last_pressed.special1 >= player.dash_cooldown then
 			last_pressed.special1 = timer
 			player.vel = input_vec:normalize() * player.dash_speed * player.vel:magnitude()
 			sfx(2)
