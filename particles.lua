@@ -36,12 +36,12 @@ function spawn_particle(p)
 	end)
 end
 
-function spawn_trail(x, y, col, count)
+function spawn_trail(x, y, col, count, time)
   for i = 1, count or 1 do
     local p = {
     x = x + rnd(2)-1,
     y = y + rnd(2)-1,
-    t = 10,
+    t = time or 10,
     c = col or 6,
     type = "trail",
   }

@@ -40,6 +40,7 @@ function _init()
 	level_up_options = {}
 	selected_option = 1
 	player.force_threshold = 0.5
+	player.dash_sprite_frames=0
 	load_arena(curr_arena)
 end
 

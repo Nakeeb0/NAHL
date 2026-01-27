@@ -43,6 +43,7 @@ function player_input()
 		if timer - last_pressed.special1 >= player.dash_cooldown then
 			last_pressed.special1 = timer
 			player.vel = input_vec:normalize() * player.dash_speed * player.vel:magnitude()
+			player.dash_sprite_frames = min(35,(player.vel:magnitude()+1)^2 + 10)
 			sfx(2)
 		end
 	end
@@ -56,7 +57,14 @@ function player_input()
 
 	if input_vec:magnitude() > 0 or trail_running_for > 0 then
 		count = player.vel:magnitude()
-		spawn_trail(player.pos.x, player.pos.y, 8, count)
+		local color = 8
+		local time = 10
+		if player.dash_sprite_frames > 0 then
+			color = 12
+			count = count*0.5
+			time = 18
+		end
+		spawn_trail(player.pos.x, player.pos.y, color, count, time)
 	end
 	last_input = (input_vec:magnitude() > 0)
 end

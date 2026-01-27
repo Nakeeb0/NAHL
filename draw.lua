@@ -73,6 +73,12 @@ function draw_actor(act)
 	if act.vel:magnitude() < act.velocity_cutoff then
 		act.frame = 0
 	end
+	if player.dash_sprite_frames>0 then
+		player.dash_sprite_frames = player.dash_sprite_frames-1
+		player.index = 70
+	else
+		player.index = 17
+	end
 	if act.type == "dasher" then
 		if act.state == "dashing" then
 			act.frame = 2
