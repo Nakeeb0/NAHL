@@ -4,7 +4,6 @@ function blackhole_update()
     end
     if #enemies < 2 then
         local a = dasher_ai.new(roll_xy())
-        a:dash_in(100)
     end
 end
 

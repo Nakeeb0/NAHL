@@ -15,7 +15,7 @@ function straight_ai.new(x, y)
 	setmetatable(a, straight_ai)
 	a.type = "straight-laced"
 	a.frames = 4
-	a.max_velocity = 1.11
+	a.max_velocity = 0.8 + rnd(0.6)
 	a.accel = 0.01
 	a.friction = 1
 	a.bounce = 1
@@ -97,14 +97,17 @@ function dasher_ai.new(x, y)
 	local a = base_ai.new(x, y)
 	setmetatable(a, dasher_ai)
 	a.type = "dasher"
-	a.accel = 3.5
-	a.friction = 0.95
+	a.max_velocity = 100
+	a.accel = 3.5 
+	a.friction = 0.94
 	a.bounce = 1
 	a.weight = 2
 	a.hp_max = 3
 	a.hp = 3
 	a.index = 67
 	a.state = "neutral"
+	a.dash_time = 110 + flr(rnd(100))
+	a:dash_in(a.dash_time)
 	return a
 end
 
@@ -112,7 +115,7 @@ function dasher_ai:dash_in(time)
 	local t = 0
 	add_update_coroutine(function()
 		while self.dead == false do
-			if t == time / 2 then
+			if t == time - 60 then
 				self.state = "charged"
 			end
 			if t == time then
@@ -150,7 +153,7 @@ function ai_update()
 		elseif enemy.type == "dasher" then
 			if enemy.state == "dashing" and enemy.vel:magnitude() == 0 then
 				enemy.state = "neutral"
-				enemy:dash_in(150)
+				enemy:dash_in(enemy.dash_time)
 			end
 		end
 	end
