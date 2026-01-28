@@ -23,7 +23,8 @@ function _init()
 	last_nothing = -600
 
 	enemies = {}
-	actor = {}
+	actors = {}
+	env_objects = {}
 	player = pc.new(17, 32+arenax, 32+arenay)
 	level_up_options = {}
 	selected_option = 1

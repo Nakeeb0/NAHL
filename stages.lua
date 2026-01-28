@@ -16,7 +16,7 @@ end
 
 function normal_draw()
 	cls()
-	--print(#actor, 50+arenax, 50+arenay, 7)
+	--print(actors[2].invulnerable, 50+arenax, 50+arenay, 7)
 	draw_health_bar(arenax+4, arenay+123, arenax+ 64, arenay+126, 8)
 	draw_dash_cooldown(arenax+78, arenay + 123, arenax + 124, arenay + 126, 7)
 	draw_death_fx()
@@ -30,7 +30,7 @@ function normal_draw()
 	camera(arenax + shake_x, arenay + shake_y)
 
 	map()
-	for act in all(actor) do
+	for act in all(actors) do
 		draw_actor(act)
 	end
 	for proj in all(projectiles) do
@@ -96,7 +96,7 @@ function arena_update()
 	ai_update()
 	check_all_actor_collision()
 	check_all_projectile_collisions()
-	for act in all(actor) do
+	for act in all(actors) do
 		move_actor(act)
 	end
 	for proj in all(projectiles) do

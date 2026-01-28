@@ -97,6 +97,7 @@ function draw_actor(act)
 end
 
 function draw_health_bar(x1, y1, x2, y2, color)
+	y1+=1
 	rect(x1, y1 - 1, x2, y2 + 1, 6)
 	local chunk = (x2 - x1) / player.hp_max
 	rectfill(x1, y1, max(x1, x2 - (chunk * (player.hp_max - player.hp))), y2, color)
@@ -108,6 +109,7 @@ function draw_health_bar(x1, y1, x2, y2, color)
 end
 
 function draw_dash_cooldown(x1, y1, x2, y2, color)
+	y1+=1
 	rect(x1, y1 - 1, x2, y2 + 1, 6)
 	local fill_width = min(abs(timer - last_pressed.special1), player.dash_cooldown) / player.dash_cooldown* (x2 - x1)
 	rectfill(x1, y1, fill_width + x1, y2, color)

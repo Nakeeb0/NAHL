@@ -1,5 +1,5 @@
 function blackhole_update()
-	for act in all(actor) do
+	for act in all(actors) do
         if not(flr(act.pos.x /8) <= 24 and flr(act.pos.x/8) >= 23 
         and flr(act.pos.y/8) >= 7 and flr(act.pos.y/8) <= 8) then
 		    act.vel += (vec2d.new(64 + arenax - act.pos.x, 64 + arenay - act.pos.y):normalize() * 0.035) -- black hole effect
@@ -58,7 +58,7 @@ function load_arena(name)
 	player.pos.x = 32 + arenax
 	player.pos.y = 32 + arenay
 	for ai in all(enemies) do
-		del(actor, ai)
+		del(actors, ai)
 	end
 	enemies = {}
 end

@@ -47,8 +47,8 @@ function check_all_projectile_collisions()
 	check_proj_death()
 	for i = 1, #projectiles - 1 do
 		local a = projectiles[i]
-		for j = 1, #actor do
-			local b = actor[j]
+		for j = 1, #actors do
+			local b = actors[j]
 			if b.ghosted == false and a.team ~= b.team then
 				if actor_collision(a, b) then
 					if b.invulnerable == false then
