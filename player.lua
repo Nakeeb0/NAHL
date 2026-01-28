@@ -14,7 +14,7 @@ function pc:dash(input_vec)
 end
 
 function pc.new(index, x, y)
-	player = make_actor(index, x, y)
+	player = actor:new_actor(index, x, y)
 	setmetatable(player, pc)
 	player.w = 3
 	player.dash_speed = 2

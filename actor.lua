@@ -2,14 +2,13 @@ next_actor_id = 1
 function rng(l, r)
 	return rnd(r - l + 1) + l
 end
-
-function make_actor(index, x, y)
-	local a = {
+base_actor = {}
+base_actor.__index = base_actor
+function base_actor:new(index,x,y)
+	local o = {
 		index = index,
 		pos = vec2d.new(x+arenax, y+arenay),
 		vel = vec2d.new(0, 0),
-		id = next_actor_id,
-		next_actor_id = next_actor_id + 1,
 		accel = 0.15,
 		frame = 0,
 		t = 0,
@@ -19,24 +18,68 @@ function make_actor(index, x, y)
 		frames = 6,
 		velocity_cutoff = 0.25,
 		max_velocity = 999,
-		hp = 10,
-		hp_max = 10,
 		damage = 1,
 		w = 4,
 		h = 4,
-		force = 1,
-		team = 1,
-		invul_frames = 30,
-		force_threshold = 1.5,
-		dead = false,
 		ghosted = false,
 		frozen = false,
-		invulnerable = false,
-	}
-	add(actor, a)
-	return a
-end
 
+	}
+	setmetatable(o, self)
+	-- add(actor,o) hold on here
+	return o
+end
+-- function make_actor(index, x, y)
+-- 	local a = {
+-- 		index = index,
+-- 		pos = vec2d.new(x+arenax, y+arenay),
+-- 		vel = vec2d.new(0, 0),
+-- 		id = next_actor_id,
+-- 		next_actor_id = next_actor_id + 1,
+-- 		accel = 0.15,
+-- 		frame = 0,
+-- 		t = 0,
+-- 		friction = 0.94,
+-- 		bounce = 0.8,
+-- 		weight = 1,
+-- 		frames = 6,
+-- 		velocity_cutoff = 0.25,
+-- 		max_velocity = 999,
+-- 		hp = 10, -- will be in new 
+-- 		hp_max = 10, -- will be in new
+-- 		damage = 1, 
+-- 		w = 4,
+-- 		h = 4,
+-- 		force = 1, -- will be in new
+-- 		team = 1,	--will be in new
+-- 		invul_frames = 30, --will be in new
+-- 		force_threshold = 1.5, -- will be in new
+-- 		dead = false, --will be in new
+-- 		ghosted = false, 
+-- 		frozen = false,
+-- 		invulnerable = false, --will be in new
+-- 	}
+-- 	add(actors, a)
+-- 	return a
+-- end
+
+actor = setmetatable({}, {__index = base_actor})
+actor.__index = actor
+function actor:new_actor(index,x,y)
+	local o = base_actor:new(index,x,y)
+	o.id = next_actor_id
+	next_actor_id = next_actor_id + 1
+	o.hp = 10 
+	o.hp_max = 10
+	o.force = 1
+	o.team = 1
+	o.invul_frames = 30
+	o.force_threshold = 1.5
+	o.dead = false
+	o.invulnerable = false
+	add(actors,o)
+	return o
+end
 pair_last_hit = {}
 pair_cd = 10
 
@@ -202,10 +245,10 @@ function move_actor(a)
 end
 
 function check_death()
-	for act in all(actor) do
+	for act in all(actors) do
 		if act.dead == true then
 			if act == player then
-			    del(actor, act)
+			    del(actors, act)
 				game_over()
 				return
 			end
@@ -219,7 +262,7 @@ function check_death()
 			if score > 0 and flr(score / 2) > player.power_ups then
 				start_level_up()
 			end
-			del(actor, act)
+			del(actors, act)
 			del(enemies, act)
 		end
 	end

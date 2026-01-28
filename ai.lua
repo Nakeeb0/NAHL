@@ -2,7 +2,7 @@ base_ai = {}
 base_ai.__index = base_ai
 
 function base_ai.new(x, y)
-	local a = make_actor(3, x, y)
+	local a = actor:new_actor(3, x, y)
 	add(enemies, a)
 	return a
 end
