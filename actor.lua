@@ -233,20 +233,30 @@ function move_actor(a)
 		a.pos.x += a.vel.x
 	else
 		a.vel.x *= -a.bounce
+		if hurtful_collide and a == player and a.invulnerable == false then
+			a.hp -= 1
+			set_invulnerable(a, a.invul_frames)
+			hurtful_collide = false
+		end
 	end
 
 	if not solid_aabb(a, a.pos.x, a.pos.y + a.vel.y) then
 		a.pos.y += a.vel.y
 	else
 		a.vel.y *= -a.bounce
+		if hurtful_collide and a == player and a.invulnerable == false then
+			a.hp -= 1
+			set_invulnerable(a, a.invul_frames)
+			hurtful_collide = false
+		end
 	end
-
+	check_death()
 	a.vel *= a.friction
 end
 
 function check_death()
 	for act in all(actors) do
-		if act.dead == true then
+		if act.dead == true or act.hp == 0 then
 			if act == player then
 			    del(actors, act)
 				game_over()

@@ -2,6 +2,7 @@ function _init()
 	_dr = normal_draw
 	_upd = arena_update
 	difficulty = 0
+	hurtful_collide = false
 	curr_arena = rnd(arena_names)
 	arenax = arenas[curr_arena].x * 8
 	arenay = arenas[curr_arena].y * 8

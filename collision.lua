@@ -2,10 +2,15 @@ function solid_tile(tx, ty)
 	return fget(mget(tx, ty), 7)
 end
 
+function hurtful_tile(tx, ty)
+	return (fget(mget(tx, ty), 6) and fget(mget(tx,ty), 7))
+end
+
+
 function solid_aabb(a, check_x, check_y)
-	local l = check_x - a.w 
+	local l = check_x - a.w
 	local r = check_x + a.w
-	local t = check_y - a.h 
+	local t = check_y - a.h
 	local b = check_y + a.h
 
 	local tx0 = flr(l / 8)
@@ -13,6 +18,7 @@ function solid_aabb(a, check_x, check_y)
 	local ty0 = flr(t / 8)
 	local ty1 = flr(b / 8)
 
+    hurtful_collide = hurtful_tile(tx0, ty0) or hurtful_tile(tx1, ty0) or hurtful_tile(tx0, ty1) or hurtful_tile(tx1, ty1)
 	return solid_tile(tx0, ty0) or solid_tile(tx1, ty0) or solid_tile(tx0, ty1) or solid_tile(tx1, ty1)
 end
 
