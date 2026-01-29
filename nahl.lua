@@ -2,7 +2,6 @@ function _init()
 	_dr = normal_draw
 	_upd = arena_update
 	difficulty = 0
-	hurtful_collide = false
 	curr_arena = rnd(arena_names)
 	arenax = arenas[curr_arena].x * 8
 	arenay = arenas[curr_arena].y * 8
@@ -25,7 +24,7 @@ function _init()
 
 	enemies = {}
 	actors = {}
-	env_objects = {}
+	env_actors = {}
 	player = pc.new(17, 32+arenax, 32+arenay)
 	level_up_options = {}
 	selected_option = 1

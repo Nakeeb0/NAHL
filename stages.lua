@@ -16,7 +16,7 @@ end
 
 function normal_draw()
 	cls()
-	--print(actors[2].invulnerable, 50+arenax, 50+arenay, 7)
+	--print(actor_collision(actors[2],env_actors[1]), 50+arenax, 50+arenay, 7)
 	draw_health_bar(arenax+4, arenay+123, arenax+ 64, arenay+126, 8)
 	draw_dash_cooldown(arenax+78, arenay + 123, arenax + 124, arenay + 126, 7)
 	draw_death_fx()
@@ -31,6 +31,9 @@ function normal_draw()
 
 	map()
 	for act in all(actors) do
+		draw_actor(act)
+	end
+	for act in all(env_actors) do
 		draw_actor(act)
 	end
 	for proj in all(projectiles) do
@@ -90,12 +93,17 @@ function level_up_update()
 		end
 	end
 end
-
+function check_env_actor_functionality()
+	for env in all(env_actors) do
+		env.env_actor_update(env)
+	end
+end
 function arena_update()
 	player_input()
 	ai_update()
 	check_all_actor_collision()
 	check_all_projectile_collisions()
+	check_env_actor_functionality()
 	for act in all(actors) do
 		move_actor(act)
 	end

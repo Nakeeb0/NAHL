@@ -1,4 +1,5 @@
 next_actor_id = 1
+next_env_actor_id = 1
 function rng(l, r)
 	return rnd(r - l + 1) + l
 end
@@ -23,45 +24,37 @@ function base_actor:new(index,x,y)
 		h = 4,
 		ghosted = false,
 		frozen = false,
+		type = "generic",
+		pushable = true,
 
 	}
 	setmetatable(o, self)
 	-- add(actor,o) hold on here
 	return o
 end
--- function make_actor(index, x, y)
--- 	local a = {
--- 		index = index,
--- 		pos = vec2d.new(x+arenax, y+arenay),
--- 		vel = vec2d.new(0, 0),
--- 		id = next_actor_id,
--- 		next_actor_id = next_actor_id + 1,
--- 		accel = 0.15,
--- 		frame = 0,
--- 		t = 0,
--- 		friction = 0.94,
--- 		bounce = 0.8,
--- 		weight = 1,
--- 		frames = 6,
--- 		velocity_cutoff = 0.25,
--- 		max_velocity = 999,
--- 		hp = 10, -- will be in new 
--- 		hp_max = 10, -- will be in new
--- 		damage = 1, 
--- 		w = 4,
--- 		h = 4,
--- 		force = 1, -- will be in new
--- 		team = 1,	--will be in new
--- 		invul_frames = 30, --will be in new
--- 		force_threshold = 1.5, -- will be in new
--- 		dead = false, --will be in new
--- 		ghosted = false, 
--- 		frozen = false,
--- 		invulnerable = false, --will be in new
--- 	}
--- 	add(actors, a)
--- 	return a
--- end
+
+env_actor = setmetatable({}, {
+    __index = base_actor
+})
+env_actor.__index = env_actor
+function env_actor:new_env_actor(index, x, y, name)
+    local o = base_actor:new(index, x, y)
+    o.id = next_actor_id
+    next_env_actor_id = next_env_actor_id + 1
+    o.force = 1
+    o.team = -1
+    o.force_threshold = 1.5
+	o.type='env_actor'
+	o.frames = 1
+	o.invulnerable = true --controls destructibility of environment
+	o.invul_frames = 30
+	o.hp = 1
+	o.env_actor_update = function () end --placeholder
+	o.weight = 1
+	o.name = name
+    add(env_actors, o)
+    return o
+end
 
 actor = setmetatable({}, {__index = base_actor})
 actor.__index = actor
@@ -73,10 +66,11 @@ function actor:new_actor(index,x,y)
 	o.hp_max = 10
 	o.force = 1
 	o.team = 1
+	o.invulnerable = false
 	o.invul_frames = 30
 	o.force_threshold = 1.5
 	o.dead = false
-	o.invulnerable = false
+	o.type = "actor"
 	add(actors,o)
 	return o
 end
@@ -165,12 +159,11 @@ function resolve_damage(a, b, mag_a, mag_b)
 	end
 
 	damaged.hp -= damager.damage
-
-	set_invulnerable(damaged, damaged.invul_frames)
+	if damaged.invulnerable == false then set_invulnerable(damaged, damaged.invul_frames) end
 
 	if damaged == player then
 		sfx(3)
-	elseif damager == player then
+	elseif damaged ~= player then
 		sfx(4)
 	else
 		sfx(5)
@@ -233,22 +226,12 @@ function move_actor(a)
 		a.pos.x += a.vel.x
 	else
 		a.vel.x *= -a.bounce
-		if hurtful_collide and a == player and a.invulnerable == false then
-			a.hp -= 1
-			set_invulnerable(a, a.invul_frames)
-			hurtful_collide = false
-		end
 	end
 
 	if not solid_aabb(a, a.pos.x, a.pos.y + a.vel.y) then
 		a.pos.y += a.vel.y
 	else
 		a.vel.y *= -a.bounce
-		if hurtful_collide and a == player and a.invulnerable == false then
-			a.hp -= 1
-			set_invulnerable(a, a.invul_frames)
-			hurtful_collide = false
-		end
 	end
 	check_death()
 	a.vel *= a.friction

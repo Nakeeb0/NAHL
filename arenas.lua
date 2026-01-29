@@ -2,7 +2,7 @@ function blackhole_update()
 	for act in all(actors) do
         if not(flr(act.pos.x /8) <= 24 and flr(act.pos.x/8) >= 23 
         and flr(act.pos.y/8) >= 7 and flr(act.pos.y/8) <= 8) then
-		    act.vel += (vec2d.new(64 + arenax - act.pos.x, 64 + arenay - act.pos.y):normalize() * 0.035) -- black hole effect
+		    if act.type != "env_actor" then act.vel += (vec2d.new(64 + arenax - act.pos.x, 64 + arenay - act.pos.y):normalize() * 0.035)  end-- black hole effect
         end
 	end
     if timer % 600 == 0 then
@@ -40,7 +40,7 @@ arenas = {
 	["default"] = {
 		x = 0,
 		y = 0,
-		possible_enemy_spawn = { dasher_ai.new, straight_ai.new },
+		possible_enemy_spawn = { dasher_ai.new,straight_ai.new},
 		update = default_update,
 	},
 	["blackhole"] = {
@@ -60,7 +60,14 @@ function load_arena(name)
 	for ai in all(enemies) do
 		del(actors, ai)
 	end
+	for env_act in all(env_actors) do
+		del(actors, env_act)
+	end
 	enemies = {}
+	spike = env_actor:new_env_actor(196, 36, 20,"spike")
+	for env_actor in all(env_actors) do
+		env_actor.env_actor_update = envobjects[env_actor.name].env_actor_update
+	end
 end
 
 arena_names = { "default", "blackhole" }
