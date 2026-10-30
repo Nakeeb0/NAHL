@@ -30,6 +30,6 @@ pico8 nahl.p8 -export docs/index.html
 Built in two weeks (January 2026) by a team of five:
 [Nakeeb](https://github.com/Nakeeb0) ·
 [Abdallah Elrouby](https://github.com/Rouby-py) ·
-Zeyad Ahmed ·
-MrPie007 ·
-realhesh
+[TheOutputIsNotRight] (https://github.com/TheOutputIsNotRight)·
+[Abdelrahman Shehata] (https://github.com/MrPie007) ·
+[realhesh] (https://github.com/realhesh)
